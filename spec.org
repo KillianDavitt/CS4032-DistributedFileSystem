@@ -1,0 +1,89 @@
+
+
+#+BEGIN_SRC plantuml :file security.png
+
+' Client auth with AS
+Client -> AS: Hello
+AS -> Client: enc_hash(nonce)
+Client -> AS: enc_hash(nonce+1) // Client can only increment nonce if he has the hash 420
+AS -> DirServer: enc_rsa(token)
+AS -> Client: enc_hash(token, dirServerIP, dirServerPubKey) 
+
+' Client talk to DirServer
+Client -> DirServer: DIFFIE_HELLMAN
+Client -> Client: x := key
+DirServer -> DirServer: x := key
+
+Client -> DirServer : Here is my token
+DirServer -> Client: Grand
+
+Client -> DirServer: `ls`
+DirServer -> Client: files
+
+#+END_SRC
+
+#+RESULTS:
+[[file:security.png]]
+
+
+
+
+#+BEGIN_SRC plantuml :file find_file_server.png
+Client -> DS: Send token
+DS -> Client: Valid
+
+Client -> Client: hash := SHA256(filename)
+Client -> DS: GET hash
+
+DS -> DS: servers := files[hash]
+DS -> Client: servers.get_first() 
+
+Client -> DS: Thanks
+
+#+END_SRC
+#+RESULTS:
+[[file:read_write.png]]
+
+
+#+BEGIN_SRC plantuml :file get_file.png
+Client -> FS: Send token
+FS -> Client: VALID
+Client -> FS: GET hash
+FS -> Client: file
+#+END_SRC
+#+RESULTS:
+[[file:get_file.png]]
+
+
+#+BEGIN_SRC plantuml :file put_file.png
+Client -> FS: Send token
+FS -> Client: VALID
+Client -> FS: PUT hash, file
+FS -> Client: okay
+FS -> mirror: PUT hash, file
+#+END_SRC
+#+RESULTS:
+[[file:put_file.png]]
+
+#+BEGIN_SRC plantuml :file file_server_dies.png
+Client -> Client: can't find FS
+Client -> DS: Can't find FS
+DS -> DS: servers := lookup(ip)
+DS -> DS: servers.server_dead(ip)
+DS -> DS: new_ip = servers.get_first()
+DS -> Client: new_ip
+DS -> Admin: ALERT SERVER DOWN
+#+END_SRC
+#+RESULTS:
+[[file:file_server_dies.png]]
+#+BRING_SRC plantuml :file certificate_propagation.png
+AS -> AS: Online
+Admin -> AS: Accept certs with symm enc over y
+Admin -> DS: Connect to DS with symm enc over y
+DS -> AS: enc_y(Hello World ++ cert.crt)
+AS -> AS: decryption is valid
+AS -> AS: accept cert
+AS -> DS: Cert accepted
+AS -> AS: Discard y
+DS -> DS: Discard y
+#+END_SRC
