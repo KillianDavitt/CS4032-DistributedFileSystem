@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/ticket"
 	"github.com/kataras/iris"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/redis.v5"
@@ -22,15 +23,6 @@ func main() {
 	iris.Get("/login", login)
 
 	iris.ListenTLS(":8080", "./cert.pem", "./key_new.pem")
-}
-
-func get_token() {
-	b := make([]byte, 64)
-	_, err := rand.Read(b)
-	if err != nil {
-		fmt.Println("error:", err)
-		return
-	}
 }
 
 func login(c *iris.Context) {
