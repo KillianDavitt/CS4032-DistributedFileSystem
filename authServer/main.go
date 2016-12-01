@@ -2,10 +2,12 @@ package main
 
 import (
 	"crypto/rand"
+	"encoding/json"
 	"fmt"
 	"github.com/kataras/iris"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/redis.v5"
+	"net/http"
 )
 
 func main() {
@@ -45,4 +47,13 @@ func login(c *iris.Context) {
 	if err != nil {
 		c.HTML(iris.StatusForbidden, "Incorrect username or password")
 	}
+
+	// Gen token, give back to user, then give to all servers
+	ticket := newTicket()
+	out, err := json.Marshal(ticket)
+	fmt.Printf("%#v", ticket)
+	fmt.Println(string(ticket.token))
+	c.HTML(iris.StatusOK, fmt.Sprintf("%#v", ticket))
+	dirServerIP := "10.1.2.1"
+	_, err = http.Get("https://" + dirServerIP + "/register_token" + "?token=" + string(out))
 }
