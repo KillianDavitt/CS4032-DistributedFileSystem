@@ -23,7 +23,7 @@ func genToken() []byte {
 	return token
 }
 
-func newTicket() ticket {
+func NewTicket() ticket {
 	new_ticket := ticket{}
 	new_ticket.token = genToken()
 	//new_ticket.issuee = user
