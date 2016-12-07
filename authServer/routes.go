@@ -12,6 +12,8 @@ import (
 )
 
 func login(c *iris.Context) {
+
+	// Connect to redis
 	client := redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
 		Password: "", // no password set
@@ -21,7 +23,10 @@ func login(c *iris.Context) {
 	username := c.FormValueString("username")
 	password := c.FormValueString("password")
 	hashedPassword, err := client.Get(username).Result()
+
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+
+	// Invalid username or password, RIP
 	if err != nil {
 		c.HTML(iris.StatusForbidden, "Incorrect username or password")
 	}
@@ -37,6 +42,8 @@ func login(c *iris.Context) {
 
 	c.HTML(iris.StatusOK, string(signed_ticket)+string(ticket_bson))
 	dirServerIP := "10.1.2.1"
+
+	// Send token to the dir server
 	go func() {
 		_, err = http.Get("https://" + dirServerIP + "/register_token" + "?token=" + string(ticket_bson) + string(signed_ticket))
 	}()
