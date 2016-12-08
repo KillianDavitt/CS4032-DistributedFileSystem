@@ -20,9 +20,9 @@ func main() {
 	fmt.Println("About to print sig")
 	fmt.Printf("%x", conn.ConnectionState().PeerCertificates[0].Signature)
 */
-	f := readFiles()
-	iris.Get("/get_file", func(ctx *iris.Context, f *files){getFile(ctx, f)})
+	iris.Get("/get_file", getFile)
 	iris.Get("/list_files", listFiles)
+	iris.Post("/put_file", putFile)
 	iris.Get("/register_token", registerToken)
 	iris.ListenTLS(":8080", "./cert.pem", "./key_new.pem")
 }

@@ -1,22 +1,22 @@
 package main
 import (
-	"fmt"
 	"github.com/kataras/iris"
+	"log"
+	"io/ioutil"
 )
-func getFile(ctx *iris.Context, f *files){
+func getFile(ctx *iris.Context){
 	filename := ctx.URLParam("filename")
 	f := readFiles()
 	ip := f.getFile(filename).String()
 	ctx.HTML(iris.StatusOK, ip)
 }
 
-func putFile(ctx *iris.Context, f *files){
-	// this needs to be run before a new file is put
-	filename := ctx.URLParam("filename")
-	f := readFiles()
+func putFile(ctx *iris.Context){
+
 }
 
-func listFiles(ctx *iris.Context, f *files){
+
+func listFiles(ctx *iris.Context){
 	f := readFiles()
 	ctx.HTML(iris.StatusOK, f.getFile("test.txt").String())
 }
