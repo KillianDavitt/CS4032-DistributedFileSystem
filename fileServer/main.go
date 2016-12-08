@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	iris.Get("/write_file", writeFile)
-
+	iris.Post("/write_file", writeFile)
+	iris.Get("/read_file", readFile)
 	iris.ListenTLS(":8080", "./cert.pem", "./key.pem")
 }

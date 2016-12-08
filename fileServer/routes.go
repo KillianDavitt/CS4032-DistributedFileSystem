@@ -1,14 +1,10 @@
 package main
 
 import (
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/kataras/iris"
-	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/redis.v5"
 	"log"
-	"net/http"
+	"os"
+	"io/ioutil"
 )
 
 func writeFile(ctx *iris.Context){
@@ -17,17 +13,39 @@ func writeFile(ctx *iris.Context){
 	if err != nil {
 		log.Print(err)
 	}
+
+	filename := info.Filename
 	file, err := info.Open()
 	if err != nil {
 		log.Print(err)
 	}
 	defer file.Close()
-	
+
 	fileContents, err := ioutil.ReadAll(file)
 	
+	newFile, err := os.OpenFile("./" + filename, os.O_CREATE, os.ModeExclusive)
+	if err != nil{
+		log.Print(err)
+	}
+	_, err = newFile.Write(fileContents)
+	if err != nil {
+		log.Print(err)
+	}
 	ctx.HTML(iris.StatusOK, string(fileContents))
+	newFile.Close()
 }
 
-func readFile(c *iris.Context){
+func readFile(ctx *iris.Context){
 
+	filename := ctx.Param("filename")
+
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Print(err)
+		ctx.HTML(iris.StatusOK, "File not found")
+	}
+
+	contents, err := ioutil.ReadAll(file)
+	ctx.HTML(iris.StatusOK, string(contents))
+	
 }
