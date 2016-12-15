@@ -23,7 +23,7 @@ func writeFile(ctx *iris.Context){
 
 	fileContents, err := ioutil.ReadAll(file)
 	
-	newFile, err := os.OpenFile("./" + filename, os.O_CREATE, os.ModeExclusive)
+	newFile, err := os.Create("/home/killian/" + filename)
 	if err != nil{
 		log.Print(err)
 	}
@@ -37,15 +37,18 @@ func writeFile(ctx *iris.Context){
 
 func readFile(ctx *iris.Context){
 
-	filename := ctx.Param("filename")
-
-	file, err := os.Open(filename)
+	filename := ctx.URLParam("filename")
+	log.Print(filename)
+	file, err := os.Open("/home/killian/" + filename)
 	if err != nil {
 		log.Print(err)
 		ctx.HTML(iris.StatusOK, "File not found")
 	}
 
 	contents, err := ioutil.ReadAll(file)
+	if err != nil {
+		log.Print(err)
+	}
 	ctx.HTML(iris.StatusOK, string(contents))
 	
 }
