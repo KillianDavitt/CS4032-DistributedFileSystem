@@ -1,0 +1,10 @@
+#+Title: Stephen's 'Security' protocol
+#+Author: davittk
+
+1. This assumes that the client and authserver have negotiated a password for the user
+
+
+
+[[~/git/CS4032-DistributedFileSystem/security.png]]
+
+2. It is not good that the password is stored in plaintext on the server.... not good at all

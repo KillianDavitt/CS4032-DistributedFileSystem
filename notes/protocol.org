@@ -1,0 +1,90 @@
+#+Title: CS4032 Protocol
+
+* General Protocol
+
+** Propagation of certs
+##ile:certificate_propogation.png]]
+
+All connecting servers must report their public keys to the auth server. The auth server can only trust the identity of the server providing the cert by encrpyting this channel with a pre shared key.
+The server admin manages the sharing of this key.
+
+
+** TLS and server trust model
+####iletls_server_trust.png]]
+
+All comms are over TLS. If the admin sets everything up correctly, all servers will have the self signed certs of all the other servers, or at least the ones which they will communicate with.
+If a user connects to the auth server, they must decide whether to trust the auth servers cert. If they do, the auth server can vouch for the validity of the public keys for all the other servers. Therefore,
+the user can now communicate with encrypted and authenticated comms with integrity. 
+** User auth
+[[file:security.png]]
+
+After TLS is setup to the auth server, all we need worry about is authing the user. User hashes their password, send that hash and user_id to the auth server. Auth server then looks up the data and can verify the user.
+The auth server generates a random token, and distributes this to all the other servers with a specified expiry time. The user also gets this token. Very simply, if a user wants to connect to a server, they
+provide the token thereby proving that they have authed with the auth server.
+
+** Get file from server
+
+
+[[file:get_file.png]]
+
+** Put file from server
+[[file:put_file.png]]
+
+** Case file server is dead
+[[file:file_server_dies.png]]
+
+* Security
+Through TLS the main pillars of security are achieved
+- Encryption
+- Authentication
+- Integrity
+
+A careful admin can setup self sign certs in such a way as to guarantee this, in addition, it is very possible to add additional servers into this security model.
+
+TLS allows us to use our simple but effective token protocol to auth users.
+
+** The token
+
+A 3-tuple
+
+ $$ token := (t, c, exp) $$
+
+
+Where:
+- $ t := SHA256(urandom)$
+- c := datetime.now()
+- exp := datetime.now + 1 week
+
+
+The resulting token is encrypted under AS's private key1
+\newline
+
+t needs to be a quality random value, if anyone could predict it, they could forge a token and gain access.
+\newline
+
+related to this, it's also important that we encrypt under AS's priv key so that a fileserver can prove that the token was created by the AS.
+\newline
+
+c, and exp are self explanatory. A server knows that if the expiry date has been reached, not to accept the token. In addition a server might could be configured to not accept tokens of non realistic expirys.
+e.g if a user got a token with expiry 5 years from now, a fileserver might want to reject. The extra value in the token just allows a bit of flexibility in the protocol in this regard. 
+ 
+* Directory Service
+The directory service holds a dictionary from strings to server objects. Strings would be hashes fully qualified filenames e.g. "test/programs/files/test.c"
+
+Server objects are an n-tuple of ip addresses:
+
+$$ S := (ip_1, ip_2, ..., ip_n) $$
+
+The following methods are defined on server objects
+
+- getFirstIp() - returns the first ip address in the list
+- invalidateIp(ip) - invalidates the given ip address and prevents it from being issued 
+
+* Replication
+
+Initially I am adopting a RAID like approach for this replication model. In particular RAID1
+* Caching
+
+* Transacctions
+
+* Locking

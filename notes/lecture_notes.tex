@@ -1,0 +1,120 @@
+% Created 2016-11-14 Mon 12:12
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\author{killian}
+\date{\today}
+\title{lecture\_notes}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.5.1 (Org mode 8.2.10)}}
+\begin{document}
+
+\maketitle
+\section{Distro File System}
+\label{sec-1}
+
+\section{Features we want:}
+\label{sec-2}
+\begin{itemize}
+\item Login
+\item Open
+\item Close
+\item Read
+\item Write
+\end{itemize}
+
+\section{It does not matter how our dfs is implemented or designed, as long as it implements the above features and is reasonable}
+\label{sec-3}
+
+
+\section{There are 2 main models of distributed file system}
+\label{sec-4}
+
+\subsection{NFS Model}
+\label{sec-4-1}
+\begin{itemize}
+\item Smart Proxy
+\item Just forward all the requests
+\item Read ops on a file immediately pushed to server
+\item Write ops immediately pushed to server
+\item And so on\ldots{}..
+\end{itemize}
+
+\subsection{AFS Model}
+\label{sec-4-2}
+\begin{itemize}
+\item Open and Close go across network
+\item Read and Write don't
+\item Caching strategy
+\item Cache locally, modify and push file when done
+\item Possibility for files to go out of sync - think github merge
+\item Whoever writes back their file first overwrites the server version
+\item This is called session semantics.
+\end{itemize}
+
+\subsection{The session problem also occurs in NFS}
+\label{sec-4-3}
+\begin{itemize}
+\item However, systems where this happens should more likely be using a database, not a distro file system
+\end{itemize}
+
+\subsection{Why do people use afs?}
+\label{sec-4-4}
+\begin{itemize}
+\item Designed for larger userbases
+\item The idea is that most people will not modify the files, but they will want to read them.
+\item (Think .exe's and such)
+\item Better use of caching, much less bandwith use than NFS
+\end{itemize}
+
+\section{Our DFS}
+\label{sec-5}
+\begin{itemize}
+\item Think of AFS and NFS as two extremes in the spectrum of distributed file systems
+\item Either full caching or no caching
+\item "A good dfs will fall somewhere between these"
+\item This is a choice we will make for our own filesystems
+\item Maybe changes get pushed in time intervals, push new data every 2 minutes?
+\end{itemize}
+
+\section{directory Server}
+\label{sec-6}
+\begin{itemize}
+\item A directory server is a server in the distributed file system that stores the actual location of all the files, across all the servers
+\item A user asks the directory server for a file and it transparantly retrieves it from wherever it is
+\end{itemize}
+
+\section{Locking}
+\label{sec-7}
+\begin{itemize}
+\item We could introduce a locking server
+\item We could also leave this to the individual file servers to manage their own locks
+\item "Normal strategy" is to put the locking for all the files in the one service
+\end{itemize}
+
+\section{Authentication}
+\label{sec-8}
+\begin{itemize}
+\item Authentication server
+\item A user logs in to the authentication server
+\item How do we let all the other servers know that the user has authenticated
+\item MORE to come here!\% Created 2016-11-14 Mon 11:48
+\end{itemize}
+% Emacs 24.5.1 (Org mode 8.2.10)
+\end{document}

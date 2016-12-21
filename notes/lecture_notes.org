@@ -1,0 +1,61 @@
+#+OPTIONS: toc:nil        no default TOC at all
+* Distro File System
+
+* Features we want:
+ - Login
+ - Open
+ - Close
+ - Read
+ - Write
+
+* It does not matter how our dfs is implemented or designed, as long as it implements the above features and is reasonable
+
+
+* There are 2 main models of distributed file system
+
+** NFS Model
+ - Smart Proxy
+ - Just forward all the requests
+ - Read ops on a file immediately pushed to server 
+ - Write ops immediately pushed to server
+ - And so on.....
+
+** AFS Model
+ - Open and Close go across network
+ - Read and Write don't
+ - Caching strategy
+ - Cache locally, modify and push file when done
+ - Possibility for files to go out of sync - think github merge
+ - Whoever writes back their file first overwrites the server version
+ - This is called session semantics.
+
+** The session problem also occurs in NFS
+ - However, systems where this happens should more likely be using a database, not a distro file system
+
+** Why do people use afs?
+ - Designed for larger userbases
+ - The idea is that most people will not modify the files, but they will want to read them.
+ - (Think .exe's and such)
+ - Better use of caching, much less bandwith use than NFS
+
+* Our DFS
+ - Think of AFS and NFS as two extremes in the spectrum of distributed file systems
+ - Either full caching or no caching
+ - "A good dfs will fall somewhere between these"
+ - This is a choice we will make for our own filesystems
+ - Maybe changes get pushed in time intervals, push new data every 2 minutes?
+
+* directory Server
+ - A directory server is a server in the distributed file system that stores the actual location of all the files, across all the servers
+ - A user asks the directory server for a file and it transparantly retrieves it from wherever it is
+
+* Locking
+ - We could introduce a locking server
+ - We could also leave this to the individual file servers to manage their own locks
+ - "Normal strategy" is to put the locking for all the files in the one service
+
+* Authentication
+ - Authentication server
+ - A user logs in to the authentication server
+ - How do we let all the other servers know that the user has authenticated
+ - MORE to come here!% Created 2016-11-14 Mon 11:48
