@@ -12,12 +12,16 @@ func list(_ string){
 	fmt.Println("Listing")
 }
 
+func put_file(_ string){
+	fmt.Println("Putting file")
+}
+
 func main(){
 
 	funcs := make(map[string]func(string))
 
 	funcs["ls"] = list
-	
+	funcs["put"] = put_file	
 	inp := ""
 	for {
 		fmt.Print(">")
