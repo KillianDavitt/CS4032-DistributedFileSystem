@@ -2,7 +2,7 @@
 
 This is the repository for my CS4032 - Distributed Systems project: A distributed file system
 
-The final report can be found in [file:report/report.org]
+The final report can be found in [file:./report/report.org]
 
 general protocol notes and thoughts can be found in [file:notes/]
 
