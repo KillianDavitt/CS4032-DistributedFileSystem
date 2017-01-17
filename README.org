@@ -1,5 +1,11 @@
-# CS4032-DistributedFileSystem
+* CS4032-DistributedFileSystem
 
+This is the repository for my CS4032 - Distributed Systems project: A distributed file system
 
+The final report can be found in [file:report/report.org]
+
+general protocol notes and thoughts can be found in [file:notes/]
+
+* Timeline
 - 27/11/16: After much pen and paper work, I've begun putting my protocol design into a document on the repo. Ideally very minimal coding will be done before I finish
 this spec.
