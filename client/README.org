@@ -1,0 +1,13 @@
+* Client
+A client is the service that the user uses to interact with the server.
+
+It needs to allow:
+
+- auth
+- ls
+- get
+- put
+- create lock on file
+- local caching
+- begin transaction
+- end transaction
