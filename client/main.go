@@ -7,6 +7,7 @@ import (
 	"os"
 	"gopkg.in/mgo.v2/bson"
 	"log"
+	"io/ioutil"
 )
 
 func help(){
@@ -19,10 +20,6 @@ func list(_ string){
 
 func put_file(_ string){
 	fmt.Println("Putting file")
-}
-
-func auth(_ string){
-	fmt.Println("Authing...")
 }
 
 func transaction_start(_ string){
@@ -39,7 +36,20 @@ type authServer struct{
 	PubKey rsa.PublicKey
 }
 
-func getConfig(){
+func writeConfig(authServ *authServer) {
+	fmt.Println(authServ.PubKey.E)
+	authServBytes, err := bson.Marshal(authServ)
+	if err != nil {
+		log.Fatal(err)
+	}
+	file, err := os.Open(".dfs.conf")
+	if err != nil {
+		log.Fatal(err)
+	}
+	file.Write(authServBytes)
+}
+
+func getConfig() (*authServer) {
 	if _, err := os.Stat(".dfs.conf"); os.IsNotExist(err) {
 		newServ := &authServer{}
 		fmt.Println("Enter the ip of the auth server")
@@ -55,13 +65,28 @@ func getConfig(){
 			log.Fatal(err)
 		}
 		file.Write(authServBytes)
+		return newServ
+	} else {
+		authServ := &authServer{}
+		authServBytes, err := ioutil.ReadFile(".dfs.conf")
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = bson.Unmarshal(authServBytes, authServ)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(authServ.PubKey.E)
+		return authServ
 	}
+	
 }
 
 func main(){
 
 	funcs := make(map[string]func(string))
-	getConfig()
+	authServ := getConfig()
+	fmt.Println(authServ.Ip)
 	funcs["ls"] = list
 	funcs["put"] = put_file
 	funcs["transaction start"] = transaction_start
@@ -69,7 +94,7 @@ func main(){
 	inp := ""
 
 	fmt.Println("Welcome to DFS")
-	auth("hi")
+	auth(authServ)
 	help()
 	for {
 		fmt.Print(">")

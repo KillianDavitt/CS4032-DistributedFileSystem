@@ -9,6 +9,7 @@ import (
 	"gopkg.in/redis.v5"
 	"log"
 	"net/http"
+	"fmt"
 )
 
 func login(c *iris.Context) {
@@ -20,8 +21,9 @@ func login(c *iris.Context) {
 		DB:       0,  // use default DB
 	})
 
-	username := c.FormValueString("username")
-	password := c.FormValueString("password")
+	username := c.FormValue("username")
+	password := c.FormValue("password")
+	fmt.Println(username)
 	hashedPassword, err := client.Get(username).Result()
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))

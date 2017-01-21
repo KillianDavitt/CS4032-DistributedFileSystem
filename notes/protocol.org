@@ -82,7 +82,8 @@ The following methods are defined on server objects
 
 * Replication
 
-Initially I am adopting a RAID like approach for this replication model. In particular RAID1
+Initially I am adopting a RAID like approach for this replication model. In particular RAID1.
+Server A stores File x. When a user uploads to Server A, Server A forwards the new file to Server B
 * Caching
 
 * Transacctions

@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	iris.Get("/login", login)
+	iris.Post("/login", login)
 
-	iris.ListenTLS(":8080", "./newcert.pem", "./newkey_new.pem")
+	iris.ListenTLS(":8080", "./root-ca_mod.crt", "./root-key_mod.pem")
 }

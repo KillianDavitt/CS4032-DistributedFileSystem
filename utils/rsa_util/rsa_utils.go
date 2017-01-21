@@ -12,11 +12,11 @@ import (
 )
 
 func GetPubKey() *rsa.PublicKey {
-	pubKeyPem, err := ioutil.ReadFile("pubkey.pem")
-	pubKeyBytes, _ := pem.Decode(pubKeyPem)
+	pubKeyPem, err := ioutil.ReadFile("mykey.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
+	pubKeyBytes, _ := pem.Decode(pubKeyPem)
 	pubKeyInterface, err := x509.ParsePKIXPublicKey(pubKeyBytes.Bytes)
 	if err != nil {
 		log.Fatal(err)
@@ -27,9 +27,9 @@ func GetPubKey() *rsa.PublicKey {
 }
 
 func GetPrivKey() *rsa.PrivateKey {
-	privKeyPem, err := ioutil.ReadFile("key_new.pem")
+	privKeyPem, err := ioutil.ReadFile("key.pem")
 	if err != nil {
-
+		log.Fatal(err)
 	}
 	privKeyBytes, _ := pem.Decode(privKeyPem)
 	privKeyInterface, err := x509.ParsePKCS1PrivateKey(privKeyBytes.Bytes)
