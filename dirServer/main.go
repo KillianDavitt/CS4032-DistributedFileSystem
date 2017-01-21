@@ -2,24 +2,12 @@ package main
 
 import (
 	"github.com/kataras/iris"
-	//"fmt"
-	//"crypto/tls"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 )
 
 func main() {
-	/*fmt.Println("Please enter the ip of the auth Server...")
-	var ipString string
-	fmt.Scanln(&ipString)
-	fmt.Println(ipString)
-
-	conn, err := tls.Dial("tcp", ipString + ":8080", &tls.Config{})
-	if err != nil {
-		fmt.Print(err)
-	}
-
-	fmt.Println("About to print sig")
-	fmt.Printf("%x", conn.ConnectionState().PeerCertificates[0].Signature)
-*/
+	// First thing, get contact with the auth server and confirm it's indentity
+	auth.Init()
 	iris.Get("/get_file", getFile)
 	iris.Get("/list_files", listFiles)
 	iris.Post("/put_file", putFile)
