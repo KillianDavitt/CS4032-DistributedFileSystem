@@ -9,3 +9,4 @@ general protocol notes and thoughts can be found in [[file:notes/][notes/]]
 * Timeline
 - 27/11/16: After much pen and paper work, I've begun putting my protocol design into a document on the repo. Ideally very minimal coding will be done before I finish
 this spec.
+- 21/1/17: Auth Server almost completed. client sign in working over TLS. Token creation by authServer completed.
