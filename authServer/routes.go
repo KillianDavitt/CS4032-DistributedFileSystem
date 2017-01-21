@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"fmt"
+	"encoding/base64"
 )
 
 func login(c *iris.Context) {
@@ -41,8 +42,9 @@ func login(c *iris.Context) {
 	}
 	privKey := rsa_util.GetPrivKey()
 	signed_ticket := rsa_util.Sign(ticket_bson, privKey)
-
-	c.HTML(iris.StatusOK, string(signed_ticket)+string(ticket_bson))
+	signed_ticket_64 := base64.StdEncoding.EncodeToString(signed_ticket)
+	ticket_bson_64 := base64.StdEncoding.EncodeToString(ticket_bson)
+	c.HTML(iris.StatusOK, signed_ticket_64 + "|" + ticket_bson_64)
 	dirServerIP := "10.1.2.1"
 
 	// Send token to the dir server
