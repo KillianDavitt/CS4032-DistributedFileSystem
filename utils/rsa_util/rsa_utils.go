@@ -27,7 +27,7 @@ func GetPubKey() *rsa.PublicKey {
 }
 
 func GetPrivKey() *rsa.PrivateKey {
-	privKeyPem, err := ioutil.ReadFile("key.pem")
+	privKeyPem, err := ioutil.ReadFile("root-key_mod.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -55,4 +55,15 @@ func Sign(data []byte, priv *rsa.PrivateKey) []byte {
 		log.Fatal(err)
 	}
 	return signature
+}
+//VerifyPKCS1v15(pub *PublicKey, hash crypto.Hash, hashed []byte, sig []byte) error
+func Verify(pubKey *rsa.PublicKey, data []byte, signature []byte) (bool){
+        h := sha512.New()
+	h.Write(data)
+	hashed := h.Sum(nil)
+        err := rsa.VerifyPKCS1v15(pubKey, crypto.SHA512, hashed, signature)
+	if err != nil {
+            return false
+        }
+	return true
 }

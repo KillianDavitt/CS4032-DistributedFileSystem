@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"log"
 	"time"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
 )
 
 type ticket struct {
@@ -35,10 +36,45 @@ func NewTicket() ticket {
 
 }
 
-func MarshalTicket(t ticket) []byte {
+func (t ticket) MarshalTicket() []byte {
 	data, err := json.Marshal(t)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return data
+}
+
+func (t ticket) CreateTicketMap(privKey *rsa.PrivateKey) string {
+	ticketMap := make(map[string][]byte)
+	ticketBytes := t.MarshalTicket()
+	ticketMap["ticket"] = ticketBytes
+	signedTicket := rsa_util.Sign(ticketBytes, privKey)
+	ticketMap["signed_ticket"] = signedTicket
+	jsonBytes, err := json.Marshal(ticketMap)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(jsonBytes)
+}
+
+func GetTicketMap(ticketMapString string, pubKey *rsa.PublicKey) (ticket) {
+	ticketMap := make(map[string][]byte)
+	err := json.Unmarshal([]byte(ticketMapString), &ticketMap)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	providedSig := ticketMap["signed_ticket"]
+	ticketData := ticketMap["ticket"]
+	validSignature := rsa_util.Verify(pubKey, ticketData, providedSig)
+	if !validSignature {
+		log.Fatal("Failure verifying ticket signature, possible MITM!")
+	}
+
+	var newTicket ticket
+	err = json.Unmarshal(ticketData, &newTicket)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return newTicket
 }

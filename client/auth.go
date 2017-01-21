@@ -7,8 +7,8 @@ import (
 	"crypto/rsa"
 	"log"
 	"net/url"
-	"io"
-	"os"
+	"io/ioutil"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 )
 
 func auth(authServ *authServer){
@@ -61,10 +61,12 @@ func auth(authServ *authServer){
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-        _, err = io.Copy(os.Stdout, resp.Body)
-        if err != nil {
+        bytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
 		log.Fatal(err)
-        }
+	}
+	ticket := ticket.GetTicketMap(string(bytes),&authServ.PubKey)
+	fmt.Println(ticket)
 	
 	
 }
