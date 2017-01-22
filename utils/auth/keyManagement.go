@@ -39,8 +39,8 @@ func RetrieveKey(identifier string) (pubKey *rsa.PublicKey) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	publicKey := pub.(rsa.PublicKey)
-	return &publicKey
+	publicKey := pub.(*rsa.PublicKey)
+	return publicKey
 	
 }
 

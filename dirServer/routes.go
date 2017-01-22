@@ -25,7 +25,7 @@ func listFiles(ctx *iris.Context){
 
 func registerToken(ctx *iris.Context){
 	pubKey := auth.RetrieveKey("authserver")
-	token := ctx.Param("token")
+	token := ctx.FormValue("token")
 	ticket := ticket.GetTicketMap(token, pubKey)
 	token_client := getTokenRedis()
 	expiryString, err := ticket.Expiry_date.MarshalText()
@@ -36,6 +36,7 @@ func registerToken(ctx *iris.Context){
 	if err != nil {
 		log.Fatal(err)
 	}
+	ctx.HTML(iris.StatusOK, "Register token succ")
 }
 
 func isAllowed(token []byte)(bool){

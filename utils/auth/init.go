@@ -64,7 +64,7 @@ func getConfig() (*authServer) {
 	
 }
 
-func Init() (*http.Client){
+func Init() (*http.Client, net.IP){
 	authServ := getConfig()
 
 	// InsecureSkipVerify must be set since we need to contact the auth server once to find it's fingerprint
@@ -90,6 +90,7 @@ func Init() (*http.Client){
 		if input == "y" {
 			authServ.PubKey = servedPubKey
 			writeConfig(authServ)
+			StoreRedis(&servedPubKey, "authserver")
 			fmt.Println("This auth server public key has been accepted")
 		}
 	}
@@ -100,6 +101,6 @@ func Init() (*http.Client){
 	tlsConf := &tls.Config{RootCAs: CA_Pool, InsecureSkipVerify: true}
 	transport := &http.Transport{TLSClientConfig: tlsConf}
         client := &http.Client{Transport: transport}
-	return client
+	return client, authServ.Ip
 }
 

@@ -5,6 +5,7 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"log"
+	"fmt"
 	"time"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
 )
@@ -39,6 +40,7 @@ func NewTicket() ticket {
 func (t ticket) MarshalTicket() []byte {
 	data, err := json.Marshal(t)
 	if err != nil {
+		panic(err)
 		log.Fatal(err)
 	}
 	return data
@@ -59,8 +61,10 @@ func (t ticket) CreateTicketMap(privKey *rsa.PrivateKey) string {
 
 func GetTicketMap(ticketMapString string, pubKey *rsa.PublicKey) (ticket) {
 	ticketMap := make(map[string][]byte)
+	fmt.Println(ticketMapString)
 	err := json.Unmarshal([]byte(ticketMapString), &ticketMap)
 	if err != nil {
+		panic(err)
 		log.Fatal(err)
 	}
 

@@ -11,6 +11,6 @@ func main() {
 	iris.Get("/get_file", getFile)
 	iris.Get("/list_files", listFiles)
 	iris.Post("/put_file", putFile)
-	iris.Get("/register_token", registerToken)
-	iris.ListenTLS(":8080", "./cert.pem", "./key_new.pem")
+	iris.Post("/register_token", registerToken)
+	iris.ListenTLS(":8089", "./cert.pem", "./new_key.pem")
 }

@@ -7,7 +7,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/redis.v5"
 	"net/http"
+	"net/url"
 	"fmt"
+	"log"
+	"crypto/tls"
 )
 
 func login(c *iris.Context) {
@@ -36,7 +39,7 @@ func login(c *iris.Context) {
 	
 	privKey := rsa_util.GetPrivKey()
 
-	dirServerIP := "10.1.2.1"
+	dirServerIP := "localhost"
 
 
 	ticketMapString := new_ticket.CreateTicketMap(privKey)
@@ -44,6 +47,12 @@ func login(c *iris.Context) {
 	// Send token to the dir server
 	
 	go func() {
-		_, err = http.Get("https://" + dirServerIP + "/register_token" + "?token=" + ticketMapString)
+		tlsConf := &tls.Config{ InsecureSkipVerify: true}
+		transport := &http.Transport{TLSClientConfig: tlsConf}
+		client := &http.Client{Transport: transport}
+		_, err = client.PostForm("https://" + dirServerIP + ":8089/register_token", url.Values{"token": {ticketMapString}})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}()
 }
