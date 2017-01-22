@@ -2,8 +2,10 @@ package main
 
 import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	//"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"fmt"
 	"log"
+	"io/ioutil"
 	"net/http"
 	"net"
 	"net/url"
@@ -25,18 +27,20 @@ func transaction_end(_ string){
 	fmt.Println("End transaction")
 }
 
-func login(client *http.Client, ip net.IP){
+func login(authServ *auth.AuthServer) ([]byte){
 	username := ""
 	password := ""
 	fmt.Println("Enter username:")
 	fmt.Scanf("%s", &username)
 	fmt.Println("Enter password:")
 	fmt.Scanf("%s", &password)
-	resp, err := client.PostForm("https://" + ip.String() + ":8080/login", url.Values{"username": {username}, "password": {password}}) 
+	resp, err := authServ.Client.PostForm("https://" + authServ.Ip.String() + ":8080/login", url.Values{"username": {username}, "password": {password}}) 
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(resp)
+	//ticketMap := auth.GetTicketFromResp(resp.Body, &authServ.PubKey)
+	bytes, _ := ioutil.ReadAll(resp.Body)
+	return bytes
 }
 
 func getDirIp(client *http.Client, ip net.IP) (net.IP){
@@ -49,7 +53,7 @@ func getDirIp(client *http.Client, ip net.IP) (net.IP){
 
 func main(){
 
-	funcs := make(map[string]func(string, *http.Client, net.IP))
+	funcs := make(map[string]func(string, *http.Client, net.IP, []byte))
 	funcs["ls"] = list
 	//funcs["put"] = put_file
 	//funcs["transaction start"] = transaction_start
@@ -57,9 +61,9 @@ func main(){
 	inp := ""
 
 	fmt.Println("Welcome to DFS")
-	conn, ip := auth.Init()
-	login(conn, ip)
-	dirIp := getDirIp(conn, ip)
+	authServ := auth.Init()
+	ticketMapBytes := login(authServ)
+	dirIp := getDirIp(authServ.Client, authServ.Ip)
 	
 	help()
 	for {
@@ -70,7 +74,7 @@ func main(){
 		if command == nil {
 			help()
 		} else {
-			command(inp, conn, dirIp)
+			command(inp, authServ.Client, dirIp, ticketMapBytes)
 		}
 		
 	}

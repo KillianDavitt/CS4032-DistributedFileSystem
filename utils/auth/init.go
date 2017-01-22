@@ -7,18 +7,21 @@ import (
 	"crypto/rsa"
 	"log"
 	"io/ioutil"
+	"io"
 	"net"
 	"os"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	
 )
 
-type authServer struct{
+type AuthServer struct{
 	Ip net.IP
 	PubKey rsa.PublicKey
+	Client *http.Client
 }
 
-func writeConfig(authServ *authServer) {
+func writeConfig(authServ *AuthServer) {
 	fmt.Println(authServ.PubKey.E)
 	authServBytes, err := bson.Marshal(authServ)
 	if err != nil {
@@ -31,9 +34,9 @@ func writeConfig(authServ *authServer) {
 	file.Write(authServBytes)
 }
 
-func getConfig() (*authServer) {
+func getConfig() (*AuthServer) {
 	if _, err := os.Stat(".dfs.conf"); os.IsNotExist(err) {
-		newServ := &authServer{}
+		newServ := &AuthServer{}
 		fmt.Println("Enter the ip of the auth server")
 		inp := ""
 		fmt.Scanf("%s", &inp)
@@ -49,7 +52,7 @@ func getConfig() (*authServer) {
 		file.Write(authServBytes)
 		return newServ
 	} else {
-		authServ := &authServer{}
+		authServ := &AuthServer{}
 		authServBytes, err := ioutil.ReadFile(".dfs.conf")
 		if err != nil {
 			log.Fatal(err)
@@ -64,7 +67,7 @@ func getConfig() (*authServer) {
 	
 }
 
-func Init() (*http.Client, net.IP){
+func Init() (*AuthServer){
 	authServ := getConfig()
 
 	// InsecureSkipVerify must be set since we need to contact the auth server once to find it's fingerprint
@@ -101,6 +104,12 @@ func Init() (*http.Client, net.IP){
 	tlsConf := &tls.Config{RootCAs: CA_Pool, InsecureSkipVerify: true}
 	transport := &http.Transport{TLSClientConfig: tlsConf}
         client := &http.Client{Transport: transport}
-	return client, authServ.Ip
+	authServ.Client = client
+	return authServ
 }
 
+func GetTicketFromResp(body io.Reader, pubKey *rsa.PublicKey) (ticket.Ticket){
+	bytes, _ := ioutil.ReadAll(body)
+	parsedTicketMap := ticket.GetTicketMap(string(bytes), pubKey)
+	return parsedTicketMap
+}

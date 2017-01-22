@@ -13,6 +13,10 @@ import (
 	"crypto/tls"
 )
 
+func getDirIp(ctx *iris.Context){
+	ctx.HTML(iris.StatusOK, "0.0.0.0")
+}
+
 func login(c *iris.Context) {
 
 	// Connect to redis

@@ -2,6 +2,7 @@ package main
 import (
 	"github.com/kataras/iris"
 	"log"
+	"encoding/json"
 	"gopkg.in/redis.v5"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
@@ -19,8 +20,16 @@ func putFile(ctx *iris.Context){
 
 
 func listFiles(ctx *iris.Context){
+	if !isAllowed(ctx){
+		ctx.HTML(iris.StatusForbidden, "Invalid token")
+	}
 	//	f := readFiles()
-	ctx.HTML(iris.StatusOK, "Hi")//f.getFile("test.txt").String())
+	files := [2]string{"hi.pem", "test.txt"}
+	jsonFiles, err := json.Marshal(files)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ctx.HTML(iris.StatusOK, string(jsonFiles))//f.getFile("test.txt").String())
 }
 
 func registerToken(ctx *iris.Context){
@@ -39,9 +48,12 @@ func registerToken(ctx *iris.Context){
 	ctx.HTML(iris.StatusOK, "Register token succ")
 }
 
-func isAllowed(token []byte)(bool){
+func isAllowed(ctx *iris.Context)(bool){
+	token := ctx.FormValue("token")
+	pubKey := auth.RetrieveKey("authserver")
+	ticket := ticket.GetTicketMap(token, pubKey)
 	client := getTokenRedis()
-	_, err := client.Get(string(token)).Result()
+	_, err := client.Get(string(ticket.Token)).Result()
 	if err != nil{
 		return false
 	}
