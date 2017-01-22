@@ -7,6 +7,7 @@ import (
 	"gopkg.in/redis.v5"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"fmt"
 )
 func getFile(ctx *iris.Context){
 	//filename := ctx.URLParam("filename")
@@ -23,9 +24,9 @@ func putFile(ctx *iris.Context){
 	fileHash := []byte(ctx.FormValue("hash"))
 	fileJsonBytes := lookupFileName(fileName)
 	if fileJsonBytes != "" {
-		
+		fmt.Println("Put: File existed")
 		var fileObj file
-		err := json.Unmarshal([]byte(fileJsonBytes), fileObj)
+		err := json.Unmarshal([]byte(fileJsonBytes), &fileObj)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -36,6 +37,7 @@ func putFile(ctx *iris.Context){
 		ctx.HTML(iris.StatusOK, fileObj.Ip.String())
 	} else {
 		// TODO: Fix this
+		fmt.Println("Put: File did not exist")
 		newFileServerIP := "0.0.0.0"
 		NewRedisFile(fileName, net.ParseIP(newFileServerIP), fileHash)
 		ctx.HTML(iris.StatusOK, newFileServerIP)
@@ -57,8 +59,13 @@ func listFiles(ctx *iris.Context){
 		ctx.HTML(iris.StatusForbidden, "Invalid token")
 	}
 	fileClient := getFileRedis()
-	keys := fileClient.Keys("*")
-		jsonFiles, err := json.Marshal(keys)
+	keys, err := fileClient.Keys("*.go*").Result()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(keys)
+	jsonFiles, err := json.Marshal(keys)
+	fmt.Println(string(jsonFiles))
 	if err != nil {
 		log.Fatal(err)
 	}

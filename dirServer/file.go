@@ -20,12 +20,12 @@ func (f *file) MarshalFile() ([]byte){
 }
 
 func UnmarshalFile(data []byte) (file){
-	var f file
+	f := &file{}
 	err := json.Unmarshal(data, &f)
 	if err != nil{
 		log.Fatal(err)
 	}
-	return f
+	return *f
 }
 
 func (f *file) UpdateRedisFile(){
