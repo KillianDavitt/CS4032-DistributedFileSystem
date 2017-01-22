@@ -6,17 +6,16 @@ import (
 	"fmt"
 	"log"
 	"io/ioutil"
+	"bufio"
 	"net/http"
+	"os"
 	"net"
 	"net/url"
+	"strings"
 )
 
 func help(){
 	fmt.Println("Help:\nls\nput\nget")
-}
-
-func put_file(_ string){
-	fmt.Println("Putting file")
 }
 
 func transaction_start(_ string){
@@ -38,7 +37,7 @@ func login(authServ *auth.AuthServer) ([]byte){
 	if err != nil {
 		log.Fatal(err)
 	}
-	//ticketMap := auth.GetTicketFromResp(resp.Body, &authServ.PubKey)
+	//3ticketMap := auth.GetTicketFromResp(resp.Body, &authServ.PubKey)
 	bytes, _ := ioutil.ReadAll(resp.Body)
 	return bytes
 }
@@ -53,9 +52,9 @@ func getDirIp(client *http.Client, ip net.IP) (net.IP){
 
 func main(){
 
-	funcs := make(map[string]func(string, *http.Client, net.IP, []byte))
+	funcs := make(map[string]func([]string, *http.Client, net.IP, []byte))
 	funcs["ls"] = list
-	//funcs["put"] = put_file
+	funcs["put"] = put
 	//funcs["transaction start"] = transaction_start
 	//funcs["transaction end"] = transaction_end
 	inp := ""
@@ -64,18 +63,23 @@ func main(){
 	authServ := auth.Init()
 	ticketMapBytes := login(authServ)
 	dirIp := getDirIp(authServ.Client, authServ.Ip)
-	
+	scanner := bufio.NewScanner(os.Stdin)
 	help()
 	for {
 		fmt.Print(">")
-		fmt.Scanf("%s", &inp)
+		scanner.Scan()
+		inp = scanner.Text()
+		//fmt.Scanln(&inp)
 		fmt.Println(inp)
-		command := funcs[inp]
+		args := strings.Split(inp, " ")
+		fmt.Println(args)
+		command := funcs[args[0]]
 		if command == nil {
 			help()
 		} else {
-			command(inp, authServ.Client, dirIp, ticketMapBytes)
+			command(args[1:], authServ.Client, dirIp, ticketMapBytes)
 		}
+	
 		
 	}
 }

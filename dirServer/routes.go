@@ -2,6 +2,7 @@ package main
 import (
 	"github.com/kataras/iris"
 	"log"
+	"net"
 	"encoding/json"
 	"gopkg.in/redis.v5"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
@@ -15,21 +16,53 @@ func getFile(ctx *iris.Context){
 }
 
 func putFile(ctx *iris.Context){
-	ctx.HTML(iris.StatusOK, "ok")
+	if !isAllowed(ctx){
+		ctx.HTML(iris.StatusForbidden, "Invalid Token")
+	}
+	fileName := ctx.FormValue("filename")
+	fileHash := []byte(ctx.FormValue("hash"))
+	fileJsonBytes := lookupFileName(fileName)
+	if fileJsonBytes != "" {
+		
+		var fileObj file
+		err := json.Unmarshal([]byte(fileJsonBytes), fileObj)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fileObj.Hash = fileHash
+		fileObj.UpdateRedisFile()
+		
+		ctx.HTML(iris.StatusOK, fileObj.Ip.String())
+	} else {
+		// TODO: Fix this
+		newFileServerIP := "0.0.0.0"
+		NewRedisFile(fileName, net.ParseIP(newFileServerIP), fileHash)
+		ctx.HTML(iris.StatusOK, newFileServerIP)
+	}
 }
 
+func getFileRedis()(*redis.Client){
+	return redis.NewClient(&redis.Options{ Addr: "localhost:6379", Password: "", DB: 3})
+}
+
+func lookupFileName(filename string) (string){
+	fileClient := getFileRedis()
+	res, _ := fileClient.Get(filename).Result()
+	return res
+}
 
 func listFiles(ctx *iris.Context){
 	if !isAllowed(ctx){
 		ctx.HTML(iris.StatusForbidden, "Invalid token")
 	}
-	//	f := readFiles()
-	files := [2]string{"hi.pem", "test.txt"}
-	jsonFiles, err := json.Marshal(files)
+	fileClient := getFileRedis()
+	keys := fileClient.Keys("*")
+		jsonFiles, err := json.Marshal(keys)
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx.HTML(iris.StatusOK, string(jsonFiles))//f.getFile("test.txt").String())
+	ctx.HTML(iris.StatusOK, string(jsonFiles))
 }
 
 func registerToken(ctx *iris.Context){
