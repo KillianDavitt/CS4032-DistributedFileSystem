@@ -4,6 +4,6 @@ import (
 	"github.com/kataras/iris"
 )
 
-func beginTransaction(ctx *iris.Context){
-	ctx.HTML(iris.StatusOK, "Okay)
+func beginTransaction(ctx *iris.Context) {
+	ctx.HTML(iris.StatusOK, "Okay")
 }

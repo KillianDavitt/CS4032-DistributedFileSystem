@@ -1,17 +1,18 @@
 package main
 
 import (
-	"net"
-	"log"
 	"encoding/json"
+	"log"
+	"net"
 )
-type file struct{
+
+type file struct {
 	Filename string
-	Ip net.IP
-	Hash []byte
+	Ip       net.IP
+	Hash     []byte
 }
 
-func (f *file) MarshalFile() ([]byte){
+func (f *file) MarshalFile() []byte {
 	data, err := json.Marshal(f)
 	if err != nil {
 		log.Fatal(err)
@@ -19,16 +20,16 @@ func (f *file) MarshalFile() ([]byte){
 	return data
 }
 
-func UnmarshalFile(data []byte) (file){
+func UnmarshalFile(data []byte) file {
 	f := &file{}
 	err := json.Unmarshal(data, &f)
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 	return *f
 }
 
-func (f *file) UpdateRedisFile(){
+func (f *file) UpdateRedisFile() {
 	data := f.MarshalFile()
 	fileClient := getFileRedis()
 	err := fileClient.Set(string(f.Filename), string(data), 0).Err()
@@ -37,7 +38,7 @@ func (f *file) UpdateRedisFile(){
 	}
 }
 
-func NewRedisFile(filename string, ip net.IP, hash []byte){
+func NewRedisFile(filename string, ip net.IP, hash []byte) {
 	newFile := &file{}
 	newFile.Ip = ip
 	newFile.Filename = filename

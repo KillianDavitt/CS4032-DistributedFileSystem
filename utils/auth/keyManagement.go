@@ -4,13 +4,11 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"log"
 	"gopkg.in/redis.v5"
+	"log"
 )
 
-
-
-func StoreRedis(pubKey *rsa.PublicKey, identifier string){
+func StoreRedis(pubKey *rsa.PublicKey, identifier string) {
 	PubASN1, err := x509.MarshalPKIXPublicKey(pubKey)
 	if err != nil {
 		log.Fatal(err)
@@ -41,11 +39,9 @@ func RetrieveKey(identifier string) (pubKey *rsa.PublicKey) {
 	}
 	publicKey := pub.(*rsa.PublicKey)
 	return publicKey
-	
+
 }
 
-func getPubkeyRedis() (*redis.Client){
-	return redis.NewClient(&redis.Options{ Addr: "localhost:6379", Password: "", DB: 2})
+func getPubkeyRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 2})
 }
-
-	

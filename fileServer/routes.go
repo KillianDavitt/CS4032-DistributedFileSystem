@@ -1,14 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"github.com/kataras/iris"
+	"io/ioutil"
 	"log"
 	"os"
-	"fmt"
-	"io/ioutil"
 )
 
-func writeFile(ctx *iris.Context){
+func writeFile(ctx *iris.Context) {
 	// this needs to be run before a new file is put
 	fileString := ctx.FormValue("file")
 	fileBytes := []byte(fileString)
@@ -30,7 +30,7 @@ func writeFile(ctx *iris.Context){
 	ctx.HTML(iris.StatusOK, "ok")
 }
 
-func readFile(ctx *iris.Context){
+func readFile(ctx *iris.Context) {
 
 	filename := ctx.FormValue("filename")
 	file, err := os.Open(filename)

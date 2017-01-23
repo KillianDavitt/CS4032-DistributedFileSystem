@@ -11,9 +11,9 @@ Order of execution
 6. DS prints out the keyprint
 7. DS accepts via cmd
 8. AS accepts via cmd
-9. 
+9.
 
 */
-func createTlsConfig(){
+func createTlsConfig() {
 
 }

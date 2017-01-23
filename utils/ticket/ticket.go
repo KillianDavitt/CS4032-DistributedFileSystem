@@ -4,10 +4,10 @@ import (
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/json"
-	"log"
 	"fmt"
-	"time"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
+	"log"
+	"time"
 )
 
 type Ticket struct {
@@ -59,7 +59,7 @@ func (t Ticket) CreateTicketMap(privKey *rsa.PrivateKey) string {
 	return string(jsonBytes)
 }
 
-func GetTicketMap(ticketMapString string, pubKey *rsa.PublicKey) (Ticket) {
+func GetTicketMap(ticketMapString string, pubKey *rsa.PublicKey) Ticket {
 	ticketMap := make(map[string][]byte)
 	fmt.Println(ticketMapString)
 	err := json.Unmarshal([]byte(ticketMapString), &ticketMap)

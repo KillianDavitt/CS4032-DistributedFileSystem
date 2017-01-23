@@ -1,16 +1,18 @@
 package main
+
 import (
+	"encoding/json"
+	"fmt"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/kataras/iris"
+	"gopkg.in/redis.v5"
 	"log"
 	"net"
-	"encoding/json"
-	"gopkg.in/redis.v5"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"fmt"
 )
-func getFile(ctx *iris.Context){
-	if !isAllowed(ctx){
+
+func getFile(ctx *iris.Context) {
+	if !isAllowed(ctx) {
 		ctx.HTML(iris.StatusForbidden, "Invalid Token")
 	}
 	filename := ctx.FormValue("filename")
@@ -20,8 +22,8 @@ func getFile(ctx *iris.Context){
 	ctx.HTML(iris.StatusOK, fileObj.Ip.String())
 }
 
-func putFile(ctx *iris.Context){
-	if !isAllowed(ctx){
+func putFile(ctx *iris.Context) {
+	if !isAllowed(ctx) {
 		ctx.HTML(iris.StatusForbidden, "Invalid Token")
 	}
 	fileName := ctx.FormValue("filename")
@@ -37,7 +39,7 @@ func putFile(ctx *iris.Context){
 
 		fileObj.Hash = fileHash
 		fileObj.UpdateRedisFile()
-		
+
 		ctx.HTML(iris.StatusOK, fileObj.Ip.String())
 	} else {
 		// TODO: Fix this
@@ -48,18 +50,18 @@ func putFile(ctx *iris.Context){
 	}
 }
 
-func getFileRedis()(*redis.Client){
-	return redis.NewClient(&redis.Options{ Addr: "localhost:6379", Password: "", DB: 3})
+func getFileRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 3})
 }
 
-func lookupFileName(filename string) (string){
+func lookupFileName(filename string) string {
 	fileClient := getFileRedis()
 	res, _ := fileClient.Get(filename).Result()
 	return res
 }
 
-func listFiles(ctx *iris.Context){
-	if !isAllowed(ctx){
+func listFiles(ctx *iris.Context) {
+	if !isAllowed(ctx) {
 		ctx.HTML(iris.StatusForbidden, "Invalid token")
 	}
 	fileClient := getFileRedis()
@@ -76,7 +78,7 @@ func listFiles(ctx *iris.Context){
 	ctx.HTML(iris.StatusOK, string(jsonFiles))
 }
 
-func registerToken(ctx *iris.Context){
+func registerToken(ctx *iris.Context) {
 	pubKey := auth.RetrieveKey("authserver")
 	token := ctx.FormValue("token")
 	ticket := ticket.GetTicketMap(token, pubKey)
@@ -92,18 +94,18 @@ func registerToken(ctx *iris.Context){
 	ctx.HTML(iris.StatusOK, "Register token succ")
 }
 
-func isAllowed(ctx *iris.Context)(bool){
+func isAllowed(ctx *iris.Context) bool {
 	token := ctx.FormValue("token")
 	pubKey := auth.RetrieveKey("authserver")
 	ticket := ticket.GetTicketMap(token, pubKey)
 	client := getTokenRedis()
 	_, err := client.Get(string(ticket.Token)).Result()
-	if err != nil{
+	if err != nil {
 		return false
 	}
 	return true
 }
 
-func getTokenRedis() (*redis.Client){
-	return redis.NewClient(&redis.Options{ Addr: "localhost:6379", Password: "", DB: 1})
+func getTokenRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 1})
 }

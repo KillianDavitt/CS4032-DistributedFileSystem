@@ -56,14 +56,15 @@ func Sign(data []byte, priv *rsa.PrivateKey) []byte {
 	}
 	return signature
 }
+
 //VerifyPKCS1v15(pub *PublicKey, hash crypto.Hash, hashed []byte, sig []byte) error
-func Verify(pubKey *rsa.PublicKey, data []byte, signature []byte) (bool){
-        h := sha512.New()
+func Verify(pubKey *rsa.PublicKey, data []byte, signature []byte) bool {
+	h := sha512.New()
 	h.Write(data)
 	hashed := h.Sum(nil)
-        err := rsa.VerifyPKCS1v15(pubKey, crypto.SHA512, hashed, signature)
+	err := rsa.VerifyPKCS1v15(pubKey, crypto.SHA512, hashed, signature)
 	if err != nil {
-            return false
-        }
+		return false
+	}
 	return true
 }

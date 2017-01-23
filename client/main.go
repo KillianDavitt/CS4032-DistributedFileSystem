@@ -3,37 +3,37 @@ package main
 import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 	//"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
-	"fmt"
-	"log"
-	"io/ioutil"
 	"bufio"
-	"net/http"
-	"os"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"net"
+	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
-func help(){
+func help() {
 	fmt.Println("Help:\nls\nput\nget")
 }
 
-func transaction_start(_ string){
+func transaction_start(_ string) {
 	fmt.Println("Starting transaction..")
 }
 
-func transaction_end(_ string){
+func transaction_end(_ string) {
 	fmt.Println("End transaction")
 }
 
-func login(authServ *auth.AuthServer) ([]byte){
+func login(authServ *auth.AuthServer) []byte {
 	username := ""
 	password := ""
 	fmt.Println("Enter username:")
 	fmt.Scanf("%s", &username)
 	fmt.Println("Enter password:")
 	fmt.Scanf("%s", &password)
-	resp, err := authServ.Client.PostForm("https://" + authServ.Ip.String() + ":8080/login", url.Values{"username": {username}, "password": {password}}) 
+	resp, err := authServ.Client.PostForm("https://"+authServ.Ip.String()+":8080/login", url.Values{"username": {username}, "password": {password}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,7 +42,7 @@ func login(authServ *auth.AuthServer) ([]byte){
 	return bytes
 }
 
-func getDirIp(client *http.Client, ip net.IP) (net.IP){
+func getDirIp(client *http.Client, ip net.IP) net.IP {
 	_, err := client.Get("https://" + ip.String() + ":8080/get_dir_ip")
 	if err != nil {
 		log.Fatal(err)
@@ -50,7 +50,7 @@ func getDirIp(client *http.Client, ip net.IP) (net.IP){
 	return net.ParseIP("0.0.0.0")
 }
 
-func main(){
+func main() {
 
 	funcs := make(map[string]func([]string, *http.Client, net.IP, []byte))
 	funcs["ls"] = list
@@ -79,7 +79,6 @@ func main(){
 		} else {
 			command(args[1:], authServ.Client, dirIp, ticketMapBytes)
 		}
-	
-		
+
 	}
 }

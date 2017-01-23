@@ -1,20 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-	"net"
-	"net/url"
-	"log"
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net"
+	"net/http"
+	"net/url"
 	//"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 )
 
-func list(_ []string, client *http.Client, ip net.IP, ticketMapBytes []byte){
+func list(_ []string, client *http.Client, ip net.IP, ticketMapBytes []byte) {
 	//ticketMapString := myTicket.MarshalTicket()
-	resp, err := client.PostForm("https://" + "0.0.0.0" + ":8089/list_files", url.Values{"token": {string(ticketMapBytes)}})
-	
+	resp, err := client.PostForm("https://"+"0.0.0.0"+":8089/list_files", url.Values{"token": {string(ticketMapBytes)}})
+
 	if err != nil {
 		log.Fatal(err)
 	}

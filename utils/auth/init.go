@@ -1,22 +1,22 @@
 package auth
+
 import (
-	"fmt"
+	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
-	"net/http"
-	"crypto/rsa"
-	"log"
-	"io/ioutil"
-	"io"
-	"net"
-	"os"
-	"gopkg.in/mgo.v2/bson"
+	"fmt"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
-	
+	"gopkg.in/mgo.v2/bson"
+	"io"
+	"io/ioutil"
+	"log"
+	"net"
+	"net/http"
+	"os"
 )
 
-type AuthServer struct{
-	Ip net.IP
+type AuthServer struct {
+	Ip     net.IP
 	PubKey rsa.PublicKey
 	Client *http.Client
 }
@@ -34,7 +34,7 @@ func writeConfig(authServ *AuthServer) {
 	file.Write(authServBytes)
 }
 
-func getConfig() (*AuthServer) {
+func getConfig() *AuthServer {
 	if _, err := os.Stat(".dfs.conf"); os.IsNotExist(err) {
 		newServ := &AuthServer{}
 		fmt.Println("Enter the ip of the auth server")
@@ -64,24 +64,24 @@ func getConfig() (*AuthServer) {
 		fmt.Println(authServ.PubKey.E)
 		return authServ
 	}
-	
+
 }
 
-func Init() (*AuthServer){
+func Init() *AuthServer {
 	authServ := getConfig()
 
 	// InsecureSkipVerify must be set since we need to contact the auth server once to find it's fingerprint
-	conn, err := tls.Dial("tcp", authServ.Ip.String() + ":8080", &tls.Config{InsecureSkipVerify: true})
+	conn, err := tls.Dial("tcp", authServ.Ip.String()+":8080", &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	servedCert := *conn.ConnectionState().PeerCertificates[0]
-        servedPubKey := rsa.PublicKey(*servedCert.PublicKey.(*rsa.PublicKey))
+	servedPubKey := rsa.PublicKey(*servedCert.PublicKey.(*rsa.PublicKey))
 
 	fmt.Println(authServ.PubKey.E)
 	fmt.Println(servedPubKey.E)
-	
+
 	if authServ.PubKey == servedPubKey {
 		fmt.Println("Keys match")
 	} else {
@@ -103,12 +103,12 @@ func Init() (*AuthServer){
 	// This bit set to insecure until I can fix it later
 	tlsConf := &tls.Config{RootCAs: CA_Pool, InsecureSkipVerify: true}
 	transport := &http.Transport{TLSClientConfig: tlsConf}
-        client := &http.Client{Transport: transport}
+	client := &http.Client{Transport: transport}
 	authServ.Client = client
 	return authServ
 }
 
-func GetTicketFromResp(body io.Reader, pubKey *rsa.PublicKey) (ticket.Ticket){
+func GetTicketFromResp(body io.Reader, pubKey *rsa.PublicKey) ticket.Ticket {
 	bytes, _ := ioutil.ReadAll(body)
 	parsedTicketMap := ticket.GetTicketMap(string(bytes), pubKey)
 	return parsedTicketMap
