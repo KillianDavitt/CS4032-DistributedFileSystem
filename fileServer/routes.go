@@ -33,10 +33,11 @@ func writeFile(ctx *iris.Context){
 func readFile(ctx *iris.Context){
 
 	filename := ctx.FormValue("filename")
-	file, err := os.Open("/home/killian/" + filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		log.Print(err)
 		ctx.HTML(iris.StatusOK, "File not found")
+		return
 	}
 
 	contents, err := ioutil.ReadAll(file)

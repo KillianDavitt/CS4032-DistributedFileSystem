@@ -8,7 +8,7 @@ import (
 func main() {
 	// First thing, get contact with the auth server and confirm it's indentity
 	auth.Init()
-	iris.Get("/get_file", getFile)
+	iris.Post("/get_file", getFile)
 	iris.Post("/list_files", listFiles)
 	iris.Post("/put_file", putFile)
 	iris.Post("/register_token", registerToken)

@@ -10,10 +10,14 @@ import (
 	"fmt"
 )
 func getFile(ctx *iris.Context){
-	//filename := ctx.URLParam("filename")
-	//f := readFiles()
-	//ip := f.getFile(filename).String()
-	ctx.HTML(iris.StatusOK, "hi")
+	if !isAllowed(ctx){
+		ctx.HTML(iris.StatusForbidden, "Invalid Token")
+	}
+	filename := ctx.FormValue("filename")
+	fileString := lookupFileName(filename)
+	fileObj := UnmarshalFile([]byte(fileString))
+	fmt.Println(fileObj.Ip.String())
+	ctx.HTML(iris.StatusOK, fileObj.Ip.String())
 }
 
 func putFile(ctx *iris.Context){

@@ -55,6 +55,7 @@ func main(){
 	funcs := make(map[string]func([]string, *http.Client, net.IP, []byte))
 	funcs["ls"] = list
 	funcs["put"] = put
+	funcs["get"] = get
 	//funcs["transaction start"] = transaction_start
 	//funcs["transaction end"] = transaction_end
 	inp := ""
@@ -69,7 +70,6 @@ func main(){
 		fmt.Print(">")
 		scanner.Scan()
 		inp = scanner.Text()
-		//fmt.Scanln(&inp)
 		fmt.Println(inp)
 		args := strings.Split(inp, " ")
 		fmt.Println(args)
