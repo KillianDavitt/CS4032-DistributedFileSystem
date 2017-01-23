@@ -4,41 +4,35 @@ import (
 	"github.com/kataras/iris"
 	"log"
 	"os"
+	"fmt"
 	"io/ioutil"
 )
 
 func writeFile(ctx *iris.Context){
 	// this needs to be run before a new file is put
-	info, err := ctx.FormFile("file")
+	fileString := ctx.FormValue("file")
+	fileBytes := []byte(fileString)
+	filename := ctx.FormValue("filename")
+	file, err := os.Create(filename)
 	if err != nil {
-		log.Print(err)
-	}
-
-	filename := info.Filename
-	file, err := info.Open()
-	if err != nil {
+		file, err = os.Create(filename)
+		if err != nil {
+			log.Fatal(err)
+		}
 		log.Print(err)
 	}
 	defer file.Close()
-
-	fileContents, err := ioutil.ReadAll(file)
-	
-	newFile, err := os.Create("/home/killian/" + filename)
-	if err != nil{
-		log.Print(err)
-	}
-	_, err = newFile.Write(fileContents)
+	fmt.Println(fileBytes)
+	_, err = file.Write(fileBytes)
 	if err != nil {
-		log.Print(err)
+		log.Fatal(err)
 	}
-	ctx.HTML(iris.StatusOK, string(fileContents))
-	newFile.Close()
+	ctx.HTML(iris.StatusOK, "ok")
 }
 
 func readFile(ctx *iris.Context){
 
-	filename := ctx.URLParam("filename")
-	log.Print(filename)
+	filename := ctx.FormValue("filename")
 	file, err := os.Open("/home/killian/" + filename)
 	if err != nil {
 		log.Print(err)
@@ -50,5 +44,4 @@ func readFile(ctx *iris.Context){
 		log.Print(err)
 	}
 	ctx.HTML(iris.StatusOK, string(contents))
-	
 }

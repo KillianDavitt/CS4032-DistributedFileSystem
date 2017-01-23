@@ -59,7 +59,7 @@ func listFiles(ctx *iris.Context){
 		ctx.HTML(iris.StatusForbidden, "Invalid token")
 	}
 	fileClient := getFileRedis()
-	keys, err := fileClient.Keys("*.go*").Result()
+	keys, err := fileClient.Keys("*").Result()
 	if err != nil {
 		log.Fatal(err)
 	}
