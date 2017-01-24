@@ -1,0 +1,5 @@
+* Lock Server
+
+** Endpoints
+- lock_file: Used by a client
+- unlock_file: User by a client
