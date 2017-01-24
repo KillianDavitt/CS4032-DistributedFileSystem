@@ -14,9 +14,7 @@ import (
 	"net"
 	"fmt"
 	"encoding/pem"
-	"encoding/json"
 	"crypto/x509"
-	"io/ioutil"
 )
 
 func getDirIp(ctx *iris.Context) {
