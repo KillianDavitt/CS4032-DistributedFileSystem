@@ -4,27 +4,27 @@ import (
 	"net"
 )
 
-type server struct{
-	ips[]net.IP
+type server struct {
+	ips []net.IP
 }
 
-func (s *server) getIP() net.IP{
+func (s *server) getIP() net.IP {
 	ip := s.ips[0]
 	s.ips = append(s.ips[1:], ip)
 	return ip
 }
 
-type files struct{
+type files struct {
 	filesMap map[string]*server
 }
 
-func (f *files) addFile(filename string, ip net.IP){
+func (f *files) addFile(filename string, ip net.IP) {
 	// Check if already exists
 	_ = f.filesMap[filename]
 	//if tst != nil {
 	//	log.Fatal("File already exists!")
 	//}
-	
+
 	newServer := &server{}
 	newServer.ips = make([]net.IP, 5)
 	f.filesMap[filename] = newServer
@@ -41,8 +41,7 @@ func (f *files) getFile(filename string) net.IP {
 	return f.filesMap[filename].getIP()
 }
 
- 
-func readFiles() (*files){
+func readFiles() *files {
 
 	newFiles := &files{}
 	newFiles.filesMap = make(map[string]*server)

@@ -19,10 +19,10 @@ const (
 type Server struct {
 	IP net.IP
 	Type int
-	PubKey rsa.PublicKey
+	PubKey *rsa.PublicKey
 }
 
-func NewServer(ip net.IP, serverType int, pubKey rsa.PublicKey) (*Server) {
+func NewServer(ip net.IP, serverType int, pubKey *rsa.PublicKey) (*Server) {
 	newServer := &Server{}
 	newServer.IP = ip
 	newServer.Type = serverType
@@ -33,7 +33,7 @@ func NewServer(ip net.IP, serverType int, pubKey rsa.PublicKey) (*Server) {
 
 func ReadServer(ip net.IP) (*Server) {
 	client := getServerRedis()
-	serverString, err := client.Get(ip.String()).Result()
+	serverString, err := client.Get(ip.String()).Result()w
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,3 +67,21 @@ func getServerIps() ([]net.IP) {
 	return []net.IP{net.ParseIP("127.0.0.1")}
 }
 
+func getServerObjs() ([]Server) {
+	client := getServerRedis()
+	keys, err := client.Keys("*").Result()
+	servers := make([]Server, len(keys), len(keys))
+	for i, key := range keys {
+		servers[i] = readServer(net.ParseIP(key))
+	}
+
+	
+}
+
+func getDirServers() {
+
+}
+
+func getDirIps() {
+	client := getServerRedis()
+}
