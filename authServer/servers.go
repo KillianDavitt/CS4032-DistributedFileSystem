@@ -33,7 +33,7 @@ func NewServer(ip net.IP, serverType int, pubKey *rsa.PublicKey) (*Server) {
 
 func ReadServer(ip net.IP) (*Server) {
 	client := getServerRedis()
-	serverString, err := client.Get(ip.String()).Result()w
+	serverString, err := client.Get(ip.String()).Result()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -74,14 +74,21 @@ func getServerObjs() ([]Server) {
 	for i, key := range keys {
 		servers[i] = readServer(net.ParseIP(key))
 	}
-
-	
+	return servers
 }
 
-func getDirServers() {
-
+func getDirServers() ([]Server) {
+	servers := getServerObjs()
+	dirServers := make([]Server , 0, 0)
+	for _, obj := range servers {
+		if obj.ServeType == DIR {
+			dirServers = append(dirServers, obj)
+		}
+	}
+	return dirServers
 }
 
-func getDirIps() {
-	client := getServerRedis()
+func getDirIps() ([]net.IP) {
+	dirServers := getDirServers()
+	return dirServers[0].IP
 }
