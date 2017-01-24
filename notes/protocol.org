@@ -82,8 +82,13 @@ The following methods are defined on server objects
 
 * Replication
 
-Initially I am adopting a RAID like approach for this replication model. In particular RAID1.
-Server A stores File x. When a user uploads to Server A, Server A forwards the new file to Server B
+Initially I am adopting a RAID like approach for this replication
+model. In particular RAID1.  Server A stores File x. When a user
+uploads to Server A, Server A forwards the new file to Server B Gossip
+protocol. This means i'll have to change from hashing as a means of
+identification to an incrementing system. Or maybe a list of previous hashes.
+
+
 * Caching
 
 * Transacctions

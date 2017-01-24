@@ -87,3 +87,22 @@ AS -> DS: Cert accepted
 AS -> AS: Discard y
 DS -> DS: Discard y
 #+END_SRC
+
+#+BEGIN_SRC plantuml :file replication.png
+Client -> FS1: Upload x
+FS1 -> FS2: Do you have hash(x)
+FS2 -> FS1: I dont have this hash
+FS1 -> FS2: Upload x
+Repeat for n servers
+#+END_SRC
+#+RESULTS:
+[[file:replication.png]]
+
+#+BEGIN_SRC plantuml :file locks.png
+Client1 -> LockService: Lock test.txt
+LockService -> DirServer: Give me ALL instances of test.txt
+DirServer -> LockService: List of ips of file servers
+LockService -> f in FS: Do not allow access to this file
+#+END_SRC
+#+RESULTS:
+[[file:locks.png]]
