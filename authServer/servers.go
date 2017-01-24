@@ -67,21 +67,24 @@ func getServerIps() ([]net.IP) {
 	return []net.IP{net.ParseIP("127.0.0.1")}
 }
 
-func getServerObjs() ([]Server) {
+func getServerObjs() ([]*Server) {
 	client := getServerRedis()
 	keys, err := client.Keys("*").Result()
-	servers := make([]Server, len(keys), len(keys))
+	if err != nil {
+		log.Fatal(err)
+	}
+	servers := make([]*Server, len(keys), len(keys))
 	for i, key := range keys {
-		servers[i] = readServer(net.ParseIP(key))
+		servers[i] = ReadServer(net.ParseIP(key))
 	}
 	return servers
 }
 
-func getDirServers() ([]Server) {
+func getDirServers() ([]*Server) {
 	servers := getServerObjs()
-	dirServers := make([]Server , 0, 0)
+	dirServers := make([]*Server , 0, 0)
 	for _, obj := range servers {
-		if obj.ServeType == DIR {
+		if obj.Type == DIR {
 			dirServers = append(dirServers, obj)
 		}
 	}
@@ -90,5 +93,5 @@ func getDirServers() ([]Server) {
 
 func getDirIps() ([]net.IP) {
 	dirServers := getDirServers()
-	return dirServers[0].IP
+	return []net.IP{dirServers[0].IP}
 }

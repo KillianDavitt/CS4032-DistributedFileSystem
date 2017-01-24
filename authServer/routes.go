@@ -14,12 +14,15 @@ import (
 	"net"
 	"fmt"
 	"encoding/pem"
+	"encoding/json"
 	"crypto/x509"
+	"io/ioutil"
 )
 
 func getDirIp(ctx *iris.Context) {
 	dirServerIps := getDirIps()
-	ctx.HTML(iris.StatusOK, "0.0.0.0")
+	dirServerIp := dirServerIps[0]
+	ctx.HTML(iris.StatusOK, string(dirServerIp))
 }
 
 func getLoginRedis() (*redis.Client) {

@@ -43,11 +43,14 @@ func login(authServ *auth.AuthServer) []byte {
 }
 
 func getDirIp(client *http.Client, ip net.IP) net.IP {
-	_, err := client.Get("https://" + ip.String() + ":8080/get_dir_ip")
+	resp, err := client.Get("https://" + ip.String() + ":8080/get_dir_ip")
 	if err != nil {
 		log.Fatal(err)
 	}
-	return net.ParseIP("0.0.0.0")
+	respBytes, _ := ioutil.ReadAll(resp.Body)
+	dirIp := net.ParseIP(string(respBytes))
+	
+	return dirIp
 }
 
 func main() {
