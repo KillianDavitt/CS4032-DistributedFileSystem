@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/kataras/iris"
@@ -20,7 +21,9 @@ import (
 func getDirIp(ctx *iris.Context) {
 	dirServerIps := getDirIps()
 	dirServerIp := dirServerIps[0]
-	ctx.HTML(iris.StatusOK, string(dirServerIp))
+	fmt.Println("About to distribute a dir server ip")
+	fmt.Println(dirServerIp.String())
+	ctx.HTML(iris.StatusOK, dirServerIp.String())
 }
 
 func getLoginRedis() *redis.Client {
@@ -88,12 +91,15 @@ func registerServer(ctx *iris.Context) {
 	pubKey := pubKeyInter.(*rsa.PublicKey)
 
 	serverIP := net.ParseIP(ctx.Request.RemoteAddr)
+	serverIP = net.ParseIP("127.0.0.1")
 	fmt.Println("A server wants to register itself with the following public key\n")
-	fmt.Println(pubKey)
+	fingerprint := auth.GetRSAFingerprint(pubKey)
+	fmt.Println(fingerprint)
 	fmt.Println("\nWould you like to accept? (y/n)")
 	inp := ""
 	fmt.Scanf("%s", &inp)
 	if inp == "y" {
+		fmt.Println("New server is accepted..")
 		serv := NewServer(serverIP, serverType, pubKey)
 		serv.writeServerRedis()
 	}

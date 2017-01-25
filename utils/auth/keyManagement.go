@@ -1,8 +1,10 @@
 package auth
 
 import (
+	"crypto/md5"
 	"crypto/rsa"
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/kataras/iris"
@@ -53,4 +55,26 @@ func IsAllowed(ctx *iris.Context) bool {
 	pubKey := RetrieveKey("authserver")
 	_ = ticket.GetTicketMap(token, pubKey)
 	return true
+}
+
+func GetRSAFingerprint(pubKey *rsa.PublicKey) string {
+	pubKeyBytes, err := x509.MarshalPKIXPublicKey(pubKey)
+	if err != nil {
+		log.Fatal(err)
+	}
+	pubFingerprintBytes := md5.Sum(pubKeyBytes)
+	fingerprint := hex.EncodeToString(pubFingerprintBytes[:])
+	n := len(fingerprint)
+	newPrint := ""
+	for i := 0; i < n; i++ {
+
+		newPrint += string(fingerprint[i])
+		if i%2 == 0 {
+			continue
+		} else {
+			newPrint += ":"
+		}
+
+	}
+	return newPrint
 }

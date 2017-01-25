@@ -15,7 +15,7 @@ import (
 )
 
 func help() {
-	fmt.Println("Help:\nls\nput\nget")
+	fmt.Println("\nHelp:\nls\nput\nget\n")
 }
 
 func transaction_start(_ string) {
@@ -47,7 +47,10 @@ func getDirIp(client *http.Client, ip net.IP) net.IP {
 	if err != nil {
 		log.Fatal(err)
 	}
-	respBytes, _ := ioutil.ReadAll(resp.Body)
+	respBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
 	dirIp := net.ParseIP(string(respBytes))
 
 	return dirIp
@@ -75,7 +78,6 @@ func main() {
 		inp = scanner.Text()
 		fmt.Println(inp)
 		args := strings.Split(inp, " ")
-		fmt.Println(args)
 		command := funcs[args[0]]
 		if command == nil {
 			help()

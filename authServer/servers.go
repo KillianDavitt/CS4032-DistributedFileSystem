@@ -4,6 +4,7 @@ package main
 import (
 	"crypto/rsa"
 	"encoding/json"
+	"fmt"
 	"gopkg.in/redis.v5"
 	"log"
 	"net"
@@ -43,6 +44,7 @@ func ReadServer(ip net.IP) *Server {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(parsedServer.IP.String())
 	return &parsedServer
 }
 
@@ -93,5 +95,6 @@ func getDirServers() []*Server {
 
 func getDirIps() []net.IP {
 	dirServers := getDirServers()
+	fmt.Println(dirServers[0].IP.String())
 	return []net.IP{dirServers[0].IP}
 }

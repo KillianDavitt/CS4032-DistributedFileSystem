@@ -4,10 +4,10 @@ import (
 	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
-	"gopkg.in/mgo.v2/bson"
 	"io"
 	"io/ioutil"
 	"log"
@@ -24,16 +24,20 @@ type AuthServer struct {
 }
 
 func writeConfig(authServ *AuthServer) {
-	fmt.Println(authServ.PubKey.E)
-	authServBytes, err := bson.Marshal(authServ)
+	fmt.Println("Writing config")
+	authServBytes, err := json.Marshal(authServ)
 	if err != nil {
 		log.Fatal(err)
 	}
-	file, err := os.Open(".dfs.conf")
+	file, err := os.OpenFile("./.dfs.conf", os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		log.Fatal(err)
 	}
-	file.Write(authServBytes)
+	_, err = file.Write(authServBytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	file.Close()
 }
 
 func getConfig() *AuthServer {
@@ -43,7 +47,7 @@ func getConfig() *AuthServer {
 		inp := ""
 		fmt.Scanf("%s", &inp)
 		newServ.Ip = net.ParseIP(inp)
-		authServBytes, err := bson.Marshal(newServ)
+		authServBytes, err := json.Marshal(newServ)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -52,6 +56,7 @@ func getConfig() *AuthServer {
 			log.Fatal(err)
 		}
 		file.Write(authServBytes)
+		file.Close()
 		return newServ
 	} else {
 		authServ := &AuthServer{}
@@ -59,11 +64,10 @@ func getConfig() *AuthServer {
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = bson.Unmarshal(authServBytes, authServ)
+		err = json.Unmarshal(authServBytes, authServ)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(authServ.PubKey.E)
 		return authServ
 	}
 
@@ -81,14 +85,12 @@ func Init() *AuthServer {
 	servedCert := *conn.ConnectionState().PeerCertificates[0]
 	servedPubKey := rsa.PublicKey(*servedCert.PublicKey.(*rsa.PublicKey))
 
-	fmt.Println(authServ.PubKey.E)
-	fmt.Println(servedPubKey.E)
-
-	if authServ.PubKey == servedPubKey {
+	if authServ.PubKey.E == servedPubKey.E {
 		fmt.Println("Keys match")
 	} else {
 		fmt.Println("You have not saved this auth servers public key...")
-		fmt.Println(servedPubKey.E)
+		pubFingerprint := GetRSAFingerprint(&servedPubKey)
+		fmt.Println(pubFingerprint)
 		fmt.Println("Would you like to accept this key?")
 		input := ""
 		fmt.Scanf("%s", &input)
