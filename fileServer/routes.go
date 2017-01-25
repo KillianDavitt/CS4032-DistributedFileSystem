@@ -6,9 +6,28 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"crypto/sha256"
 )
 
+func getFileHash(ctx *iris.Context) {
+	if !auth.IsAllowed(ctx) {
+		ctx.HTML(iris.StatusOK, "NOT AUTHORISED")
+		return
+	}
+	filename := ctx.FormValue("filename")
+	contents, err := ioutil.ReadAll(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	hash := sha256.Sum256(contents)
+	ctx.HTML(iris.StatusOK, string(hash))
+}
+
 func writeFile(ctx *iris.Context) {
+	if !auth.IsAllowed(ctx) {
+		ctx.HTML(iris.StatusOK, "NOT AUTHORISED")
+		return
+	}
 	// this needs to be run before a new file is put
 	fileString := ctx.FormValue("file")
 	fileBytes := []byte(fileString)
@@ -31,7 +50,10 @@ func writeFile(ctx *iris.Context) {
 }
 
 func readFile(ctx *iris.Context) {
-
+	if !auth.IsAllowed(ctx) {
+		ctx.HTML(iris.StatusOK, "NOT AUTHORISED")
+		return
+	}
 	filename := ctx.FormValue("filename")
 	file, err := os.Open(filename)
 	if err != nil {
