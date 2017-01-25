@@ -95,6 +95,5 @@ func getDirServers() []*Server {
 
 func getDirIps() []net.IP {
 	dirServers := getDirServers()
-	fmt.Println(dirServers[0].IP.String())
 	return []net.IP{dirServers[0].IP}
 }

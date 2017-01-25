@@ -28,6 +28,7 @@ func get(args []string, client *http.Client, ip net.IP, ticketMapBytes []byte) {
 
 	if isFileCached(filename, client, fileserverIp, ticketMapBytes) {
 		fmt.Println(string(getCachedFile(filename, client, fileserverIp, ticketMapBytes)))
+		fmt.Println("this was a cached file..")
 		return
 	}
 
@@ -39,5 +40,9 @@ func get(args []string, client *http.Client, ip net.IP, ticketMapBytes []byte) {
 		log.Fatal(err)
 	}
 	respBytes, _ = ioutil.ReadAll(resp.Body)
+	err = ioutil.WriteFile("cache/" + filename, respBytes, 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
 	fmt.Println(string(respBytes))
 }

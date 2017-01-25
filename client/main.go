@@ -57,7 +57,7 @@ func getDirIp(client *http.Client, ip net.IP) net.IP {
 }
 
 func main() {
-
+	initCache()
 	funcs := make(map[string]func([]string, *http.Client, net.IP, []byte))
 	funcs["ls"] = list
 	funcs["put"] = put

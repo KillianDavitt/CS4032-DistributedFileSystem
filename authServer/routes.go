@@ -21,8 +21,6 @@ import (
 func getDirIp(ctx *iris.Context) {
 	dirServerIps := getDirIps()
 	dirServerIp := dirServerIps[0]
-	fmt.Println("About to distribute a dir server ip")
-	fmt.Println(dirServerIp.String())
 	ctx.HTML(iris.StatusOK, dirServerIp.String())
 }
 

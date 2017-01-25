@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"github.com/kataras/iris"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,12 +16,12 @@ func getFileHash(ctx *iris.Context) {
 		return
 	}
 	filename := ctx.FormValue("filename")
-	contents, err := ioutil.ReadAll(filename)
+	contents, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 	hash := sha256.Sum256(contents)
-	ctx.HTML(iris.StatusOK, string(hash))
+	ctx.HTML(iris.StatusOK, string(hash[:]))
 }
 
 func writeFile(ctx *iris.Context) {
