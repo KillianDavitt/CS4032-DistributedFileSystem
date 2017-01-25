@@ -1,12 +1,12 @@
 package main
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"github.com/kataras/iris"
 	"io/ioutil"
 	"log"
 	"os"
-	"crypto/sha256"
 )
 
 func getFileHash(ctx *iris.Context) {

@@ -4,6 +4,7 @@ import (
 	"crypto/rsa"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/pem"
 	"fmt"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"gopkg.in/mgo.v2/bson"
@@ -13,7 +14,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"encoding/pem"
 )
 
 type AuthServer struct {
@@ -105,7 +105,7 @@ func Init() *AuthServer {
 	return authServ
 }
 
-func LoadCertFromDisk(filename string) (*x509.Certificate) {
+func LoadCertFromDisk(filename string) *x509.Certificate {
 	certBytes, _ := ioutil.ReadFile(filename)
 	block, _ := pem.Decode(certBytes)
 	cert, err := x509.ParseCertificate(block.Bytes)
@@ -115,7 +115,7 @@ func LoadCertFromDisk(filename string) (*x509.Certificate) {
 	return cert
 }
 
-func GetClientFromCert(cert *x509.Certificate) (*http.Client) {
+func GetClientFromCert(cert *x509.Certificate) *http.Client {
 	CA_Pool := x509.NewCertPool()
 	CA_Pool.AddCert(cert)
 

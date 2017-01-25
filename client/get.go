@@ -14,7 +14,6 @@ func get(args []string, client *http.Client, ip net.IP, ticketMapBytes []byte) {
 	filename := args[0]
 	fmt.Println(filename)
 	// TODO Caching would go here
-	
 
 	resp, err := client.PostForm("https://"+ip.String()+":8089/get_file", url.Values{"token": {string(ticketMapBytes)}, "filename": {filename}})
 	if err != nil {
@@ -27,7 +26,6 @@ func get(args []string, client *http.Client, ip net.IP, ticketMapBytes []byte) {
 		fmt.Println(string(getCachedFile(filename, client, fileserverIp, ticketMapBytes)))
 		return
 	}
-
 
 	fmt.Println(string(respBytes))
 	// Now put to the file server on the ip we received

@@ -4,10 +4,10 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
+	"github.com/kataras/iris"
 	"gopkg.in/redis.v5"
 	"log"
-	"github.com/kataras/iris"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 )
 
 func StoreRedis(pubKey *rsa.PublicKey, identifier string) {

@@ -9,7 +9,7 @@ import (
 func main() {
 
 	pubKeyBytes, _ := ioutil.ReadFile("public_key.pem")
-	
+
 	// Init contacts the auth server and organises OUR trust of it
 	authServer := auth.Init()
 	// Register contacts the auth server and organises THEIR trust of us

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/kataras/iris"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris"
 )
 
 func main() {

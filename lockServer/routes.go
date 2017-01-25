@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/kataras/iris"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris"
 	"gopkg.in/redis.v5"
 )
 
@@ -36,7 +36,7 @@ func unlockFile(ctx *iris.Context) {
 	}
 }
 
-func lockFileRedis(filename string, requester string) (bool) {
+func lockFileRedis(filename string, requester string) bool {
 	client := getLockRedis()
 	lock, err := client.Get(filename).Result()
 	if err != nil {
@@ -54,7 +54,7 @@ func lockFileRedis(filename string, requester string) (bool) {
 	}
 }
 
-func unlockFileRedis(filename string, holder string) (bool) {
+func unlockFileRedis(filename string, holder string) bool {
 	client := getLockRedis()
 	lock, err := client.Get(filename).Result()
 	if err != nil {
@@ -72,6 +72,6 @@ func unlockFileRedis(filename string, holder string) (bool) {
 	}
 }
 
-func getLockRedis() (*redis.Client) {
+func getLockRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 6})
 }

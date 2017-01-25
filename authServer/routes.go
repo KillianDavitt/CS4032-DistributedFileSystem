@@ -1,20 +1,20 @@
 package main
 
 import (
-	"crypto/tls"
 	"crypto/rsa"
+	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
+	"fmt"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/kataras/iris"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/redis.v5"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
-	"net"
-	"fmt"
-	"encoding/pem"
-	"crypto/x509"
 )
 
 func getDirIp(ctx *iris.Context) {
@@ -23,8 +23,8 @@ func getDirIp(ctx *iris.Context) {
 	ctx.HTML(iris.StatusOK, string(dirServerIp))
 }
 
-func getLoginRedis() (*redis.Client) {
-	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB:  0, })
+func getLoginRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 0})
 }
 
 func login(c *iris.Context) {
@@ -56,7 +56,7 @@ func distributeTickets(ticketMapString string) {
 	transport := &http.Transport{TLSClientConfig: tlsConf}
 	client := &http.Client{Transport: transport}
 	for _, ip := range serverIps {
-		_, err := client.PostForm("https://"+ ip.String() + ":8089/register_token", url.Values{"token": {ticketMapString}})
+		_, err := client.PostForm("https://"+ip.String()+":8089/register_token", url.Values{"token": {ticketMapString}})
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -72,7 +72,7 @@ func registerServer(ctx *iris.Context) {
 	} else {
 		serverType = DIR
 	}
-	
+
 	pubKeyPem := ctx.FormValue("public_key")
 
 	block, _ := pem.Decode([]byte(pubKeyPem))
@@ -86,8 +86,7 @@ func registerServer(ctx *iris.Context) {
 	}
 
 	pubKey := pubKeyInter.(*rsa.PublicKey)
-	
-	
+
 	serverIP := net.ParseIP(ctx.Request.RemoteAddr)
 	fmt.Println("A server wants to register itself with the following public key\n")
 	fmt.Println(pubKey)

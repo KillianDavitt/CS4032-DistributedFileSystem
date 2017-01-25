@@ -49,7 +49,7 @@ func getDirIp(client *http.Client, ip net.IP) net.IP {
 	}
 	respBytes, _ := ioutil.ReadAll(resp.Body)
 	dirIp := net.ParseIP(string(respBytes))
-	
+
 	return dirIp
 }
 

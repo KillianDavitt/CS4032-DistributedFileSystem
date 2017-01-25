@@ -1,13 +1,13 @@
 package main
 
 import (
-	"log"
-	"os"
-	"io/ioutil"
 	"crypto/sha256"
-	"net/http"
+	"io/ioutil"
+	"log"
 	"net"
+	"net/http"
 	"net/url"
+	"os"
 )
 
 func initCache() {
@@ -15,7 +15,7 @@ func initCache() {
 	os.MkdirAll("cache/", os.ModeDir)
 }
 
-func isFileCached(filename string, client *http.Client, fileServerIp net.IP, ticketMapBytes []byte) (bool) {
+func isFileCached(filename string, client *http.Client, fileServerIp net.IP, ticketMapBytes []byte) bool {
 	if _, err := os.Stat("cache/" + filename); os.IsNotExist(err) {
 		return false
 	}
@@ -27,7 +27,7 @@ func isFileCached(filename string, client *http.Client, fileServerIp net.IP, tic
 	}
 }
 
-func getCachedFile(filename string, client *http.Client, fileServerIp net.IP, ticketMapBytes []byte) ([]byte) {
+func getCachedFile(filename string, client *http.Client, fileServerIp net.IP, ticketMapBytes []byte) []byte {
 	if !isFileCached(filename, client, fileServerIp, ticketMapBytes) {
 		log.Fatal("Requested file isnt cached")
 	}
@@ -42,7 +42,7 @@ func removeOldFile(filename string) {
 	os.Remove("cache/" + filename)
 }
 
-func getLocalFileHash(filename string) ([]byte) {
+func getLocalFileHash(filename string) []byte {
 	fileBytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -51,8 +51,8 @@ func getLocalFileHash(filename string) ([]byte) {
 	return hash[:]
 }
 
-func getRemoteFileHash(filename string, client *http.Client, fileServerIp net.IP, ticketMapBytes []byte) ([]byte) {
-	resp, err := client.PostForm("https://" + fileServerIp.String() + ":8089/get_file_hash", url.Values{"token": {string(ticketMapBytes)}, "filename": {filename}})
+func getRemoteFileHash(filename string, client *http.Client, fileServerIp net.IP, ticketMapBytes []byte) []byte {
+	resp, err := client.PostForm("https://"+fileServerIp.String()+":8089/get_file_hash", url.Values{"token": {string(ticketMapBytes)}, "filename": {filename}})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -2,36 +2,36 @@
 package main
 
 import (
-	"log"
-	"net"
 	"crypto/rsa"
 	"encoding/json"
 	"gopkg.in/redis.v5"
+	"log"
+	"net"
 )
 
 // Enum for types of servers
 const (
-        DIR = iota
-        FILE
-        TRANS 
+	DIR = iota
+	FILE
+	TRANS
 )
 
 type Server struct {
-	IP net.IP
-	Type int
+	IP     net.IP
+	Type   int
 	PubKey *rsa.PublicKey
 }
 
-func NewServer(ip net.IP, serverType int, pubKey *rsa.PublicKey) (*Server) {
+func NewServer(ip net.IP, serverType int, pubKey *rsa.PublicKey) *Server {
 	newServer := &Server{}
 	newServer.IP = ip
 	newServer.Type = serverType
 	newServer.PubKey = pubKey
 	return newServer
-	
+
 }
 
-func ReadServer(ip net.IP) (*Server) {
+func ReadServer(ip net.IP) *Server {
 	client := getServerRedis()
 	serverString, err := client.Get(ip.String()).Result()
 	if err != nil {
@@ -59,15 +59,15 @@ func (s *Server) writeServerRedis() {
 	}
 }
 
-func getServerRedis()(*redis.Client) {
+func getServerRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 4})
 }
 
-func getServerIps() ([]net.IP) {
+func getServerIps() []net.IP {
 	return []net.IP{net.ParseIP("127.0.0.1")}
 }
 
-func getServerObjs() ([]*Server) {
+func getServerObjs() []*Server {
 	client := getServerRedis()
 	keys, err := client.Keys("*").Result()
 	if err != nil {
@@ -80,9 +80,9 @@ func getServerObjs() ([]*Server) {
 	return servers
 }
 
-func getDirServers() ([]*Server) {
+func getDirServers() []*Server {
 	servers := getServerObjs()
-	dirServers := make([]*Server , 0, 0)
+	dirServers := make([]*Server, 0, 0)
 	for _, obj := range servers {
 		if obj.Type == DIR {
 			dirServers = append(dirServers, obj)
@@ -91,7 +91,7 @@ func getDirServers() ([]*Server) {
 	return dirServers
 }
 
-func getDirIps() ([]net.IP) {
+func getDirIps() []net.IP {
 	dirServers := getDirServers()
 	return []net.IP{dirServers[0].IP}
 }
