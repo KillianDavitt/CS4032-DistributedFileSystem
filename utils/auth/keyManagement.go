@@ -6,6 +6,8 @@ import (
 	"encoding/pem"
 	"gopkg.in/redis.v5"
 	"log"
+	"github.com/kataras/iris"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 )
 
 func StoreRedis(pubKey *rsa.PublicKey, identifier string) {
@@ -44,4 +46,11 @@ func RetrieveKey(identifier string) (pubKey *rsa.PublicKey) {
 
 func getPubkeyRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 2})
+}
+
+func IsAllowed(ctx *iris.Context) bool {
+	token := ctx.FormValue("token")
+	pubKey := RetrieveKey("authserver")
+	_ = ticket.GetTicketMap(token, pubKey)
+	return true
 }

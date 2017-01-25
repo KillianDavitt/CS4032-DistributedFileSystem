@@ -13,10 +13,12 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"encoding/pem"
 )
 
 type AuthServer struct {
 	Ip     net.IP
+	Cert   x509.Certificate
 	PubKey rsa.PublicKey
 	Client *http.Client
 }
@@ -92,20 +94,36 @@ func Init() *AuthServer {
 		fmt.Scanf("%s", &input)
 		if input == "y" {
 			authServ.PubKey = servedPubKey
+			authServ.Cert = servedCert
 			writeConfig(authServ)
 			StoreRedis(&servedPubKey, "authserver")
 			fmt.Println("This auth server public key has been accepted")
 		}
 	}
+	client := GetClientFromCert(&servedCert)
+	authServ.Client = client
+	return authServ
+}
+
+func LoadCertFromDisk(filename string) (*x509.Certificate) {
+	certBytes, _ := ioutil.ReadFile(filename)
+	block, _ := pem.Decode(certBytes)
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cert
+}
+
+func GetClientFromCert(cert *x509.Certificate) (*http.Client) {
 	CA_Pool := x509.NewCertPool()
-	CA_Pool.AddCert(&servedCert)
+	CA_Pool.AddCert(cert)
 
 	// This bit set to insecure until I can fix it later
 	tlsConf := &tls.Config{RootCAs: CA_Pool, InsecureSkipVerify: true}
 	transport := &http.Transport{TLSClientConfig: tlsConf}
 	client := &http.Client{Transport: transport}
-	authServ.Client = client
-	return authServ
+	return client
 }
 
 func GetTicketFromResp(body io.Reader, pubKey *rsa.PublicKey) ticket.Ticket {
