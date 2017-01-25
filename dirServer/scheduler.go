@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"net"
 )
 
 type scheduler struct {
