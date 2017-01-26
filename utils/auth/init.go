@@ -117,6 +117,13 @@ func LoadCertFromDisk(filename string) *x509.Certificate {
 	return cert
 }
 
+// Returns a tls client which has the authServer as it's only root CA
+func GetTLSClient() *http.Client {
+	cert := LoadCertFromDisk("auth_pub.pem")
+	client := GetClientFromCert(cert)
+	return client
+}
+
 func GetClientFromCert(cert *x509.Certificate) *http.Client {
 	CA_Pool := x509.NewCertPool()
 	CA_Pool.AddCert(cert)

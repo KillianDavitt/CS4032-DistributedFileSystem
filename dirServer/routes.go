@@ -11,6 +11,19 @@ import (
 	"net"
 )
 
+func registerFileHolder(ctx *iris.Context) {
+	// TODO 
+	if false {
+		ctx.HTML(iris.StatusOK, "Forbidden")
+		return
+	}
+	filename := ctx.FormValue("filename")
+	fileHash := ctx.FormValue("file_hash")
+	newFileServerIP := "0.0.0.0"
+	NewRedisFile(filename, net.ParseIP(newFileServerIP), []byte(fileHash))
+	ctx.HTML(iris.StatusOK, "Registered the file server as holding this file")
+}
+
 func getFile(ctx *iris.Context) {
 	if !isAllowed(ctx) {
 		ctx.HTML(iris.StatusForbidden, "Invalid Token")
