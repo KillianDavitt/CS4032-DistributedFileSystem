@@ -1,6 +1,6 @@
 * CS4032-DistributedFileSystem
 
-[[https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem.svg?branch=master][https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem]]
+[[https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem][https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem.svg?branch=master]]
 
 **Project not yet completed, expected completion: 31st Jan**
 
