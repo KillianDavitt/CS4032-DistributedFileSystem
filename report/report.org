@@ -1,1 +1,31 @@
 #+Title: CS4032 - Distributed File System - Report
+#+Author: Killian Davitt - 13319024
+
+* General Overview
+
+* Authentication & Security
+Security and authentication of the different services was mostly done
+using x509 certificates and RSA keypairs. This allowed for an
+incredibly robust security, but only required initially authenticating
+once per server. A fully configured x509 security system requires
+minimal effort to use after initial configuration.
+
+
+* Replication
+A Gossip like system was implemented
+
+* Caching
+Files are cached on the client side based on the hash. A client can
+ask a file server for the most recent file hash. If the hash is
+different to the one of the file stored locally, the cache is
+considered to be stale and the latest file is pulled from the file
+server
+* Locking
+An advisory locking system was implemented using the lock service
+application. The lock service accepts requests from clients to lock a
+file. The lock service then records locally that the file was locked
+by a user a. If another client b attempts to lock the file the lock
+service will see that the file is already locked and will inform the
+user of such.
+
+* Transactions
