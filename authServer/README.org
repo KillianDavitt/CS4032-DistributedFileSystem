@@ -1,5 +1,5 @@
 * Auth Server
-
+[[Go Report Card][https://goreportcard.com/badge/github.com/KillianDavitt/CS4032-DistributedFileSystem]]
 ** Before use
 Generate a cert
 
