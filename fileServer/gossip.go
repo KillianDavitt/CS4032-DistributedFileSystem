@@ -10,10 +10,16 @@ import (
 	"encoding/json"
 )
 
+// Receive a question asking if we need the goss
 func receiveGoss(ctx *iris.Context) {
 	filename := ctx.FormValue("filename")
 	go findGossRecipients(filename)
 	ctx.HTML(iris.StatusOK, "Goss sent")
+}
+
+// Accept the latest goss
+func putGoss(ctx *iris.Context) {
+	ctx.HTML(iris.StatusOK, "Goss recv")
 }
 
 func getDirIp() net.IP {

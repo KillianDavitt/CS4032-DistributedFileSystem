@@ -47,6 +47,7 @@ func writeFile(ctx *iris.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	go findGossRecipients(filename)
 	ctx.HTML(iris.StatusOK, "ok")
 }
 

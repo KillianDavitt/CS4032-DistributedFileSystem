@@ -2,6 +2,8 @@
 
 [[https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem.svg?branch=master][https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem]]
 
+**Project not yet completed, expected completion: 31st Jan**
+
 This is the repository for my CS4032 - Distributed Systems project: A distributed file system
 
 The final report can be found in [[file:./report/report.org][report.org]]
