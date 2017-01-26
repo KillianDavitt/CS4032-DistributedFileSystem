@@ -15,7 +15,7 @@ import (
 )
 
 func help() {
-	fmt.Println("\nHelp:\nls\nput\nget\n")
+	fmt.Println("\nHelp:\nls\nput\nget")
 }
 
 func transaction_start(_ string) {

@@ -90,7 +90,7 @@ func registerServer(ctx *iris.Context) {
 
 	serverIP := net.ParseIP(ctx.Request.RemoteAddr)
 	serverIP = net.ParseIP("127.0.0.1")
-	fmt.Println("A server wants to register itself with the following public key\n")
+	fmt.Println("A server wants to register itself with the following public key")
 	fingerprint := auth.GetRSAFingerprint(pubKey)
 	fmt.Println(fingerprint)
 	fmt.Println("\nWould you like to accept? (y/n)")

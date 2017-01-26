@@ -40,7 +40,6 @@ func NewTicket() Ticket {
 func (t Ticket) MarshalTicket() []byte {
 	data, err := json.Marshal(t)
 	if err != nil {
-		panic(err)
 		log.Fatal(err)
 	}
 	return data
@@ -64,7 +63,6 @@ func GetTicketMap(ticketMapString string, pubKey *rsa.PublicKey) Ticket {
 	fmt.Println(ticketMapString)
 	err := json.Unmarshal([]byte(ticketMapString), &ticketMap)
 	if err != nil {
-		panic(err)
 		log.Fatal(err)
 	}
 
