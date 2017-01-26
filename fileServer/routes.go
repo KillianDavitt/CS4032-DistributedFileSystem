@@ -3,8 +3,8 @@ package main
 import (
 	"crypto/sha256"
 	"fmt"
-	"github.com/kataras/iris"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris"
 	"io/ioutil"
 	"log"
 	"os"

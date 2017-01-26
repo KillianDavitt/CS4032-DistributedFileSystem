@@ -2,7 +2,7 @@
 #+Author: Killian Davitt - 13319024
 
 * General Overview
-
+The project, written in golang consists of 5 service application as well as 1 client program.
 * Authentication & Security
 Security and authentication of the different services was mostly done
 using x509 certificates and RSA keypairs. This allowed for an

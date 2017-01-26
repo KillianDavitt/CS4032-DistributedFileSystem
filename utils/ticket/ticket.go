@@ -5,7 +5,7 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsaUtil"
 	"log"
 	"time"
 )
@@ -50,7 +50,7 @@ func (t Ticket) CreateTicketMap(privKey *rsa.PrivateKey) string {
 	ticketMap := make(map[string][]byte)
 	ticketBytes := t.MarshalTicket()
 	ticketMap["ticket"] = ticketBytes
-	signedTicket := rsa_util.Sign(ticketBytes, privKey)
+	signedTicket := rsaUtil.Sign(ticketBytes, privKey)
 	ticketMap["signed_ticket"] = signedTicket
 	jsonBytes, err := json.Marshal(ticketMap)
 	if err != nil {
@@ -70,7 +70,7 @@ func GetTicketMap(ticketMapString string, pubKey *rsa.PublicKey) Ticket {
 
 	providedSig := ticketMap["signed_ticket"]
 	ticketData := ticketMap["ticket"]
-	validSignature := rsa_util.Verify(pubKey, ticketData, providedSig)
+	validSignature := rsaUtil.Verify(pubKey, ticketData, providedSig)
 	if !validSignature {
 		log.Fatal("Failure verifying ticket signature, possible MITM!")
 	}

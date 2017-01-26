@@ -7,7 +7,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsa_util"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsaUtil"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"github.com/kataras/iris"
 	"golang.org/x/crypto/bcrypt"
@@ -44,7 +44,7 @@ func login(c *iris.Context) {
 
 	// Gen token, give back to user, then give to all servers
 	new_ticket := ticket.NewTicket()
-	privKey := rsa_util.GetPrivKey()
+	privKey := rsaUtil.GetPrivKey()
 	ticketMapString := new_ticket.CreateTicketMap(privKey)
 
 	distributeTickets(ticketMapString)

@@ -2,8 +2,8 @@ package main
 
 import (
 	"gopkg.in/redis.v5"
-//	"io/ioutil"
-//	"crypto/sha256"
+	//	"io/ioutil"
+	//	"crypto/sha256"
 	"log"
 	"strconv"
 )
@@ -12,7 +12,7 @@ func getFileRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 7})
 }
 
-// 
+//
 func isFileOutdated(filename string, num int) bool {
 	fileClient := getFileRedis()
 	res, _ := fileClient.Get(filename).Result()
@@ -26,6 +26,7 @@ func isFileOutdated(filename string, num int) bool {
 		return false
 	}
 }
+
 /*
 func getFileHash(filename string) []byte {
 	fileBytes, err := ioutil.ReadFile("files/" + filename)

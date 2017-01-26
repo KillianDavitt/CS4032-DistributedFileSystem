@@ -40,7 +40,7 @@ func get(args []string, client *http.Client, ip net.IP, ticketMapBytes []byte) {
 		log.Fatal(err)
 	}
 	respBytes, _ = ioutil.ReadAll(resp.Body)
-	err = ioutil.WriteFile("cache/" + filename, respBytes, 0777)
+	err = ioutil.WriteFile("cache/"+filename, respBytes, 0777)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -2,13 +2,13 @@ package main
 
 import (
 	"crypto/sha256"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
 	"os"
-	"fmt"
 )
 
 func initCache() {

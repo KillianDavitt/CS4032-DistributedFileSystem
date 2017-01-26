@@ -1,31 +1,47 @@
 package main
 
 import (
-	"github.com/kataras/iris"
+	"encoding/json"
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/url"
-	"io/ioutil"
-	"encoding/json"
+	"strconv"
 )
 
 // Receive a question asking if we need the goss
 func receiveGoss(ctx *iris.Context) {
 	filename := ctx.FormValue("filename")
-	go findGossRecipients(filename)
-	ctx.HTML(iris.StatusOK, "Goss sent")
+	historyNumber := ctx.FormValue("history_number")
+	historyInt, err := strconv.Atoi(historyNumber)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if isFileOutdated(filename, historyInt) {
+		go findGossRecipients(filename)
+		ctx.HTML(iris.StatusOK, "yes")
+	} else {
+		ctx.HTML(iris.StatusOK, "no")
+	}
 }
 
 // Accept the latest goss
 func putGoss(ctx *iris.Context) {
+	filename := ctx.FormValue("filename")
+	fileBytes := []byte(ctx.FormValue("file"))
+	err := ioutil.WriteFile(filename, fileBytes, 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
 	ctx.HTML(iris.StatusOK, "Goss recv")
 }
 
 func getDirIp() net.IP {
 	client := auth.GetTLSClient()
 	authServ := auth.Init()
-	resp, err := client.PostForm("https://" + authServ.Ip.String() + ":8080/get_dir_ip", url.Values{})
+	resp, err := client.PostForm("https://"+authServ.Ip.String()+":8080/get_dir_ip", url.Values{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +56,7 @@ func getDirIp() net.IP {
 func findGossRecipients(filename string) {
 	client := auth.GetTLSClient()
 	dirIp := getDirIp()
-	resp, err := client.PostForm("https://" + dirIp.String() + ":8080/get_goss_servers", url.Values{"filename": {filename}})
+	resp, err := client.PostForm("https://"+dirIp.String()+":8080/get_goss_servers", url.Values{"filename": {filename}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +72,7 @@ func findGossRecipients(filename string) {
 func sendGoss(fileServerIp net.IP, filename string) {
 	client := auth.GetTLSClient()
 	// Ask if they need it,
-	resp, err := client.PostForm("https://" + fileServerIp.String() + ":8080/receive_goss", url.Values{"filename": {filename}})
+	resp, err := client.PostForm("https://"+fileServerIp.String()+":8080/receive_goss", url.Values{"filename": {filename}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,10 +86,9 @@ func sendGoss(fileServerIp net.IP, filename string) {
 		return
 	} else {
 		// Send the latest goss
-		_, err := client.PostForm("https://" + fileServerIp.String() + ":8080/put_goss", url.Values{"filename": {filename}})
+		_, err := client.PostForm("https://"+fileServerIp.String()+":8080/put_goss", url.Values{"filename": {filename}})
 		if err != nil {
 			log.Fatal(err)
 		}
 	}
 }
-

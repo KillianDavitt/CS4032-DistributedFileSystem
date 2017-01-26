@@ -12,7 +12,7 @@ import (
 )
 
 func registerFileHolder(ctx *iris.Context) {
-	// TODO 
+	// TODO
 	if false {
 		ctx.HTML(iris.StatusOK, "Forbidden")
 		return
