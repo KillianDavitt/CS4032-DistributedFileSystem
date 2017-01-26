@@ -1,6 +1,6 @@
 * CS4032-DistributedFileSystem
 
-[![Build Status](https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem.svg?branch=master)](https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem)
+[[https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem.svg?branch=master][https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem]]
 
 This is the repository for my CS4032 - Distributed Systems project: A distributed file system
 
