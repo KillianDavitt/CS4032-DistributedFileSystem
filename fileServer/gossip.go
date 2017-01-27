@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/url"
 	"strconv"
+	"fmt"
 )
 
 // Receive a question asking if we need the goss
@@ -39,9 +40,10 @@ func putGoss(ctx *iris.Context) {
 }
 
 func getDirIp() net.IP {
-	client := auth.GetTLSClient()
+
 	authServ := auth.Init()
-	resp, err := client.PostForm("https://"+authServ.Ip.String()+":8080/get_dir_ip", url.Values{})
+	client := authServ.Client
+	resp, err := client.Get("https://"+authServ.Ip.String()+":8080/get_dir_ip")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,12 +51,15 @@ func getDirIp() net.IP {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println(string(respBytes))
 	dirIp := net.ParseIP(string(respBytes))
+	fmt.Println(dirIp.String())
 	return dirIp
 }
 
 func findGossRecipients(filename string) {
-	client := auth.GetTLSClient()
+	authServ := auth.Init()
+	client := authServ.Client
 	dirIp := getDirIp()
 	resp, err := client.PostForm("https://"+dirIp.String()+":8080/get_goss_servers", url.Values{"filename": {filename}})
 	if err != nil {

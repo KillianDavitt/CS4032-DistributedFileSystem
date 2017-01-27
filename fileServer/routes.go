@@ -16,7 +16,7 @@ func getFileHash(ctx *iris.Context) {
 		return
 	}
 	filename := ctx.FormValue("filename")
-	contents, err := ioutil.ReadFile(filename)
+	contents, err := ioutil.ReadFile("files/" + filename)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,9 +33,9 @@ func writeFile(ctx *iris.Context) {
 	fileString := ctx.FormValue("file")
 	fileBytes := []byte(fileString)
 	filename := ctx.FormValue("filename")
-	file, err := os.Create(filename)
+	file, err := os.Create("files/" + filename)
 	if err != nil {
-		file, err = os.Create(filename)
+		file, err = os.Create("files/" + filename)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -57,7 +57,7 @@ func readFile(ctx *iris.Context) {
 		return
 	}
 	filename := ctx.FormValue("filename")
-	file, err := os.Open(filename)
+	file, err := os.Open("files/" + filename)
 	if err != nil {
 		log.Print(err)
 		ctx.HTML(iris.StatusOK, "File not found")

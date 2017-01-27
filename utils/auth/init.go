@@ -99,12 +99,21 @@ func Init() *AuthServer {
 			authServ.Cert = servedCert
 			writeConfig(authServ)
 			StoreRedis(&servedPubKey, "authserver")
+			WriteCertToDisk("authserver.crt", &servedCert)
 			fmt.Println("This auth server public key has been accepted")
 		}
 	}
 	client := GetClientFromCert(&servedCert)
 	authServ.Client = client
 	return authServ
+}
+
+func WriteCertToDisk(filename string, cert *x509.Certificate) {
+	bytes := cert.Raw
+	err := ioutil.WriteFile(filename, bytes, 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func LoadCertFromDisk(filename string) *x509.Certificate {
