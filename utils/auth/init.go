@@ -77,7 +77,7 @@ func Init() *AuthServer {
 	authServ := getConfig()
 
 	// InsecureSkipVerify must be set since we need to contact the auth server once to find it's fingerprint
-	conn, err := tls.Dial("tcp", authServ.Ip.String()+":8080", &tls.Config{InsecureSkipVerify: true})
+	conn, err := tls.Dial("tcp", "https://auth" + ":8080", &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
 		log.Fatal(err)
 	}
