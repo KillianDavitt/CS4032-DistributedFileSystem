@@ -1,0 +1,29 @@
+version: "2"
+services:
+  auth:
+    build: authServer
+    working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer" 
+    volumes: 
+        - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer
+    links:
+        - redis
+  redis:
+    image: redis:alpine
+
+  file:
+    build: fileServer
+    working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer" 
+    volumes: 
+        - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer
+    links:
+        - auth
+  dir:
+    build: dirServer
+    working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/dirServer" 
+    volumes: 
+        - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/dirServer
+    links:
+        - auth
+
+  #lock:
+  #  build: lockServer

@@ -4,10 +4,15 @@ import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 	"github.com/kataras/iris"
 	"io/ioutil"
+	"log"
 )
 
 func main() {
-	pubKeyBytes, _ := ioutil.ReadFile("public_key.pem")
+	pubKeyBytes, err := ioutil.ReadFile("./fileServer/fs.pub.pem")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	authServ := auth.Init()
 	authServ.Register("file", pubKeyBytes)
 
@@ -16,5 +21,5 @@ func main() {
 	iris.Post("/read_file", readFile)
 	iris.Post("/receive_goss", receiveGoss)
 	iris.Post("/put_goss", putGoss)
-	iris.ListenTLS(":8088", "./cert.pem", "./new_key.pem")
+	iris.ListenTLS(":8088", "./fileServer/fs.cert.pem", "./fileServer/fs.key.pem")
 }
