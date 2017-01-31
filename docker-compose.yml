@@ -7,6 +7,8 @@ services:
         - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer
     links:
         - redis
+    ports:
+      - "8080:8080"
   redis:
     image: redis:alpine
 
@@ -17,6 +19,18 @@ services:
         - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer
     links:
         - auth
+    ports:
+        - "8081:8081"
+  file2:
+    build: fileServer
+    working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer" 
+    volumes: 
+        - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/authServer
+    links:
+        - auth
+    ports:
+        - "8082:8081"
+
   dir:
     build: dirServer
     working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/dirServer" 
@@ -24,6 +38,8 @@ services:
         - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/dirServer
     links:
         - auth
+    ports:
+        - "8083:8083"
 
   #lock:
   #  build: lockServer
