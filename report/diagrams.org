@@ -9,3 +9,8 @@ AuthServ -> Client: signedToken
 
 #+RESULTS:
 [[file:auth.png]]
+
+
+#+BEGIN_SRC plantuml :file caching.png
+Client -> AuthServ: (username, password)
+#+END_SRC

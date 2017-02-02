@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/kataras/iris"
+//	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/client"
 )
 
 func get(ctx *iris.Context) {
@@ -14,7 +15,7 @@ func put(ctx *iris.Context) {
 
 
 	// Next tell the dirServer we want to put
-	client.Put()
+	//client.Put()
 
 	// Next do a shadow put on the fileServer returned
 

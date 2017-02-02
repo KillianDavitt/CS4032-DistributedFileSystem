@@ -4,7 +4,7 @@ import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 	"github.com/kataras/iris"
 	"io/ioutil"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/client"
+
 )
 
 func main() {

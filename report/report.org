@@ -10,6 +10,8 @@ using x509 certificates and RSA keypairs. This allowed for an
 incredibly robust security, but only required initially authenticating
 once per server. A fully configured x509 security system requires
 minimal effort to use after initial configuration.
+
+
 [[file:auth.png]]
 
 * Replication
