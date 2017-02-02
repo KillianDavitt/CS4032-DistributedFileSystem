@@ -12,13 +12,13 @@ general protocol notes and thoughts can be found in [[file:notes/][notes/]]
 
 * Running the services
 
-```bash
+#+BEGIN_SRC bash
 cd authServer
 docker-compose up
 
 cd client
 docker-compose run client -rn # This is important
-```
+#+END_SRC
 
 * Timeline
 - 27/11/16: After much pen and paper work, I've begun putting my protocol design into a document on the repo. Ideally very minimal coding will be done before I finish this spec.
