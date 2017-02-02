@@ -12,7 +12,7 @@ import (
 )
 
 func GetPubKey() *rsa.PublicKey {
-	pubKeyPem, err := ioutil.ReadFile("mykey.pem")
+	pubKeyPem, err := ioutil.ReadFile("auth.pub.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,19 +27,20 @@ func GetPubKey() *rsa.PublicKey {
 }
 
 func GetPrivKey() *rsa.PrivateKey {
-	privKeyPem, err := ioutil.ReadFile("root-key_mod.pem")
+	privKeyPem, err := ioutil.ReadFile("auth.key.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
 	privKeyBytes, _ := pem.Decode(privKeyPem)
-	privKeyInterface, err := x509.ParsePKCS1PrivateKey(privKeyBytes.Bytes)
+	privKeyInterface, err := x509.ParsePKCS8PrivateKey(privKeyBytes.Bytes)
 	if err != nil {
 		log.Print("Error parsing priv key from file")
 		log.Fatal(err)
 	}
-	//var privKey *rsa.PrivateKey
-	//privKey = &*privKeyInterface.(*rsa.PrivateKey)
-	return privKeyInterface
+	var privKey *rsa.PrivateKey
+	privKey = &*privKeyInterface.(*rsa.PrivateKey)
+	
+	return privKey
 
 }
 

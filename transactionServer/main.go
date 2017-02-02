@@ -4,6 +4,7 @@ import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
 	"github.com/kataras/iris"
 	"io/ioutil"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/client"
 )
 
 func main() {
@@ -11,8 +12,10 @@ func main() {
 	authServ := auth.Init()
 	authServ.Register("transaction", pubKeyBytes)
 
-	iris.Post("/add_action/", addAction)
+	iris.Post("/get", get)
+	iris.Post("/put", put)
+	
 	iris.Post("/end_transaction", endTransaction)
 	iris.Post("/begin_transaction", beginTransaction)
-	iris.ListenTLS(":8088", "./cert.pem", "./new_key.pem")
+	iris.ListenTLS(":8088", "./transaction.crt.pem", "./transaction.key.pem")
 }

@@ -3,6 +3,7 @@
 
 * General Overview
 The project, written in golang consists of 5 service application as well as 1 client program.
+The services are intended to be run with docker and docker-compose.
 * Authentication & Security
 Security and authentication of the different services was mostly done
 using x509 certificates and RSA keypairs. This allowed for an
@@ -12,7 +13,9 @@ minimal effort to use after initial configuration.
 
 
 * Replication
-A Gossip like system was implemented
+A Gossip like system was implemented. Upon a fileserver receiving a file. It asks the directory server for the list of fileserver ip addresses. Then file server then
+sends a request to send gossip to 3 of the file servers. If the target server responds postively, then the fileserver sends on the latest version of the file. A simple
+file versioning is used to ensure that the most up to date files are stored.
 
 * Caching
 Files are cached on the client side based on the hash. A client can

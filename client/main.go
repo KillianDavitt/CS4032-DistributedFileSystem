@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/client"
 	//"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
 	"bufio"
 	"fmt"
@@ -59,9 +60,9 @@ func getDirIp(client *http.Client, ip net.IP) net.IP {
 func main() {
 	initCache()
 	funcs := make(map[string]func([]string, *http.Client, net.IP, []byte))
-	funcs["ls"] = list
-	funcs["put"] = put
-	funcs["get"] = get
+	funcs["ls"] = client.List
+	funcs["put"] = client.Put
+	funcs["get"] = client.Get
 	//funcs["transaction start"] = transaction_start
 	//funcs["transaction end"] = transaction_end
 	inp := ""

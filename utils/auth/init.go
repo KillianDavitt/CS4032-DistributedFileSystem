@@ -43,10 +43,20 @@ func writeConfig(authServ *AuthServer) {
 func getConfig() *AuthServer {
 	if _, err := os.Stat(".dfs.conf"); os.IsNotExist(err) {
 		newServ := &AuthServer{}
-		fmt.Println("Enter the ip of the auth server")
-		inp := ""
-		fmt.Scanf("%s", &inp)
-		newServ.Ip = net.ParseIP(inp)
+		docker := os.Args[1]
+		if docker != "docker" {
+			fmt.Println("Enter the ip of the auth server")
+			inp := ""
+			fmt.Scanf("%s", &inp)
+			newServ.Ip = net.ParseIP(inp)
+		} else {
+			ip, err := net.LookupIP("auth")
+			if err != nil {
+				log.Fatal(err)
+			}
+			newServ.Ip = ip[0]
+				
+		}
 		authServBytes, err := json.Marshal(newServ)
 		if err != nil {
 			log.Fatal(err)
@@ -75,9 +85,9 @@ func getConfig() *AuthServer {
 
 func Init() *AuthServer {
 	authServ := getConfig()
-
+	fmt.Println("UPDATED!!!!!")
 	// InsecureSkipVerify must be set since we need to contact the auth server once to find it's fingerprint
-	conn, err := tls.Dial("tcp", "https://auth" + ":8080", &tls.Config{InsecureSkipVerify: true})
+	conn, err := tls.Dial("tcp", authServ.Ip.String() + ":8080", &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,7 +109,7 @@ func Init() *AuthServer {
 			authServ.Cert = servedCert
 			writeConfig(authServ)
 			StoreRedis(&servedPubKey, "authserver")
-			WriteCertToDisk("authserver.crt", &servedCert)
+			WriteCertToDisk("auth.crt.pem", &servedCert)
 			fmt.Println("This auth server public key has been accepted")
 		}
 	}
@@ -128,7 +138,7 @@ func LoadCertFromDisk(filename string) *x509.Certificate {
 
 // Returns a tls client which has the authServer as it's only root CA
 func GetTLSClient() *http.Client {
-	cert := LoadCertFromDisk("auth_pub.pem")
+	cert := LoadCertFromDisk("auth.pub.pem")
 	client := GetClientFromCert(cert)
 	return client
 }

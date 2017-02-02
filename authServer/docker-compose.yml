@@ -1,0 +1,19 @@
+version: "2"
+services:
+  auth:
+    build: .
+    working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/" 
+    volumes: 
+        - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/
+    links:
+        - redis
+    ports:
+      - "8080:8080"
+    networks:
+      - main_net
+
+  redis:
+    image: redis:alpine
+networks:
+  main_net:
+    driver: bridge
