@@ -10,12 +10,14 @@ using x509 certificates and RSA keypairs. This allowed for an
 incredibly robust security, but only required initially authenticating
 once per server. A fully configured x509 security system requires
 minimal effort to use after initial configuration.
-
+[[file:auth.png]]
 
 * Replication
 A Gossip like system was implemented. Upon a fileserver receiving a file. It asks the directory server for the list of fileserver ip addresses. Then file server then
 sends a request to send gossip to 3 of the file servers. If the target server responds postively, then the fileserver sends on the latest version of the file. A simple
 file versioning is used to ensure that the most up to date files are stored.
+
+[[file:replication.png]]
 
 * Caching
 Files are cached on the client side based on the hash. A client can
@@ -23,6 +25,9 @@ ask a file server for the most recent file hash. If the hash is
 different to the one of the file stored locally, the cache is
 considered to be stale and the latest file is pulled from the file
 server
+
+[[file:caching.png]]
+
 * Locking
 An advisory locking system was implemented using the lock service
 application. The lock service accepts requests from clients to lock a
@@ -30,5 +35,7 @@ file. The lock service then records locally that the file was locked
 by a user a. If another client b attempts to lock the file the lock
 service will see that the file is already locked and will inform the
 user of such.
+
+[[file:locking.png]]
 
 * Transactions

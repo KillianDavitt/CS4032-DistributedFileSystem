@@ -1,0 +1,11 @@
+#+BEGIN_SRC plantuml :file auth.png
+Client -> AuthServ: (username, password)
+AuthServ -> AuthServ: LookupDetails()
+AuthServ -> Client: Valid
+AuthServ -> AuthServ: Generate 256 byte random token
+AuthServ -> AuthServ: rsaSign(token)
+AuthServ -> Client: signedToken
+#+END_SRC
+
+#+RESULTS:
+[[file:auth.png]]
