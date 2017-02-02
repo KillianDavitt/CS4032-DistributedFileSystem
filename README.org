@@ -2,7 +2,7 @@
 
 [[https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem][https://travis-ci.org/KillianDavitt/CS4032-DistributedFileSystem.svg?branch=master]]
 
-**Project not yet completed, expected completion: 31st Jan**
+**Project not yet completed, expected completion: 4th Feb**
 
 This is the repository for my CS4032 - Distributed Systems project: A distributed file system
 
@@ -13,7 +13,22 @@ general protocol notes and thoughts can be found in [[file:notes/][notes/]]
 * Running the services
 
 #+BEGIN_SRC bash
+
+# Complete each action in a seperate terminal session
+
 cd authServer
+docker-compose up
+
+cd dirServer
+docker-compose up
+
+cd fileServer
+docker-compose up
+
+cd lockServer 
+docker-compose up
+
+cd transactionServer
 docker-compose up
 
 cd client
