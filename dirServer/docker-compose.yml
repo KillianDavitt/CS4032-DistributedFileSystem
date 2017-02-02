@@ -1,0 +1,18 @@
+version: "2"
+services:
+  dir:
+    build: .
+    working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/" 
+    volumes: 
+        - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/
+    links:
+        - redis
+
+    networks:
+      - authserver_main_net
+
+  redis:
+    image: redis:alpine
+networks:
+  authserver_main_net:
+    external: true

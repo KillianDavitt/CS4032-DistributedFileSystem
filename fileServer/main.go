@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	pubKeyBytes, err := ioutil.ReadFile("./fileServer/fs.pub.pem")
+	pubKeyBytes, err := ioutil.ReadFile("./fs.pub.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -21,5 +21,5 @@ func main() {
 	iris.Post("/read_file", readFile)
 	iris.Post("/receive_goss", receiveGoss)
 	iris.Post("/put_goss", putGoss)
-	iris.ListenTLS(":8088", "./fileServer/fs.cert.pem", "./fileServer/fs.key.pem")
+	iris.ListenTLS(":8082", "./fs.cert.pem", "./fs.key.pem")
 }

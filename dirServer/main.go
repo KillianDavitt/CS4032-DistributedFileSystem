@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	pubKeyBytes, err := ioutil.ReadFile("dirServer/dir.pub.pem")
+	pubKeyBytes, err := ioutil.ReadFile("dir.pub.pem")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,5 +25,5 @@ func main() {
 	iris.Post("/list_files", listFiles)
 	iris.Post("/put_file", putFile)
 	iris.Post("/register_token", registerToken)
-	iris.ListenTLS(":8089", "dirServer/dir.crt.pem", "dirServer/dir.key.pem")
+	iris.ListenTLS(":8081", "dir.crt.pem", "dir.key.pem")
 }

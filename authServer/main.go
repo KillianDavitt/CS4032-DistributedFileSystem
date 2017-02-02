@@ -5,9 +5,9 @@ import (
 )
 
 func main() {
-
+	
 	iris.Post("/login", login)
 	iris.Post("/register_server", registerServer)
 	iris.Get("/get_dir_ip", getDirIp)
-	iris.ListenTLS(":8080", "./authServer/auth.crt.pem", "./authServer/auth.key.pem")
+	iris.ListenTLS(":8080", "./auth.crt.pem", "./auth.key.pem")
 }
