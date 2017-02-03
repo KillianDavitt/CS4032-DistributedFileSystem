@@ -1,6 +1,8 @@
 #+Title: CS4032 - Distributed File System - Report
 #+Author: Killian Davitt - 13319024
 
+- Killian Davitt, 13319024
+
 * General Overview
 The project, written in golang consists of 5 service application as well as 1 client program.
 The services are intended to be run with docker and docker-compose.
