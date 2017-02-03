@@ -4,6 +4,11 @@
 * General Overview
 The project, written in golang consists of 5 service application as well as 1 client program.
 The services are intended to be run with docker and docker-compose.
+
+
+If you would like to run the project, you can either install golang and all of the dependencies, or use a prepackaged image which I will provide. The images may
+be run using the docker-compose files in each service's directory.
+
 * Authentication & Security
 Security and authentication of the different services was mostly done
 using x509 certificates and RSA keypairs. This allowed for an
@@ -54,6 +59,6 @@ by a user a. If another client b attempts to lock the file the lock
 service will see that the file is already locked and will inform the
 user of such.
 
-[[file:locking.png]]
+[[file:lock.png]]
 
 * Transactions
