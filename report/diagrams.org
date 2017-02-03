@@ -12,5 +12,24 @@ AuthServ -> Client: signedToken
 
 
 #+BEGIN_SRC plantuml :file caching.png
-Client -> AuthServ: (username, password)
+Client -> dirServer: get("filename")
+dirServer -> Client: fileserverIP
+Client -> fileServer: getFileHash(filename)
+fileServer -> Client: fileHash
+Client -> Client: fileHash == localFileHash ??
+
+#+END_SRC
+
+#+RESULTS:
+[[file:caching.png]]
+
+
+#+BEGIN_SRC plantuml :file lock.png
+Client -> lockServer: lock("filename")
+lockServer -> Client: file is locked
+SecondClient -> lockServer: lock("filename")
+lockServer -> SecondClient: Error: file is already locked
+Client -> lockServer: unlock("filename")
+lockServer -> Client: file is unlocked
+
 #+END_SRC
