@@ -33,3 +33,19 @@ Client -> lockServer: unlock("filename")
 lockServer -> Client: file is unlocked
 
 #+END_SRC
+
+#+RESULTS:
+[[file:lock.png]]
+
+#+BEGIN_SRC plantuml :file replication.png
+Client -> fileServer: put(file)
+fileServerA -> Client: OK
+fileServerA -> dirServer: get all fileServers with file
+dirServer -> fileServerA: [fileServers]
+fileServerA -> fileServerB: gossip: fileA:versionX
+fileServerB -> fileServerA: My fileA is out of date, get(fileA)
+fileServerA -> fileServerB: fileA 
+' similarly for the other fileServers provided
+
+
+#+END_SRC
