@@ -37,6 +37,11 @@ a particular server, it will sign their x509 cert as a show of
 trust. This means that any other server in the system can now trust
 that server as they have cert signed by the CA.
 
+It should also be noted that the security and auth system is
+implemented using the robust libraries of golang/tls, golang/x509,
+openssl, etc. This ensures an incredibly high level of reliability
+compared with building our own crypto from the ground up.
+
 * Replication
 A Gossip like system was implemented. Upon a fileserver receiving a file. It asks the directory server for the list of fileserver ip addresses. Then file server then
 sends a request to send gossip to 3 of the file servers. If the target server responds postively, then the fileserver sends on the latest version of the file. A simple
