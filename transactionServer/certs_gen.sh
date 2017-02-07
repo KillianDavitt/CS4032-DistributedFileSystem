@@ -1,2 +1,1 @@
-openssl req  -x509  -nodes -days 365 -newkey rsa:1024 -keyout tran.key.pem -out tran.crt.pem &&
-        openssl x509 -pubkey -noout -in tran..crt.pem  > tran..pub.pem
+openssl req  -x509  -nodes -days 365 -newkey rsa:1024 -keyout trans.key.pem -out trans.crt.pem -subj "/C=NL/ST=Zuid Holland/L=Rotterdam/O=Sparkling Network/OU=IT Department/CN=ssl.raymii.org"&&   openssl x509 -pubkey -noout -in trans.crt.pem  > trans.pub.pem
