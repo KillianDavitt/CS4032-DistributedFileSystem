@@ -9,5 +9,5 @@ func main() {
 	auth.Init()
 	iris.Post("/lock_file", lockFile)
 	iris.Post("/unlock_file", unlockFile)
-	iris.ListenTLS(":8086", "./cert.pem", "./key.pem")
+	iris.ListenTLS(":8080", "./cert.pem", "./key.pem")
 }

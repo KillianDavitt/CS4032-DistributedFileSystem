@@ -58,7 +58,7 @@ func distributeTickets(ticketMapString string) {
 	transport := &http.Transport{TLSClientConfig: tlsConf}
 	client := &http.Client{Transport: transport}
 	for _, ip := range serverIps {
-		_, err := client.PostForm("https://"+ip.String()+":8089/register_token", url.Values{"token": {ticketMapString}})
+		_, err := client.PostForm("https://"+ip.String()+":8080/register_token", url.Values{"token": {ticketMapString}})
 		if err != nil {
 			log.Fatal(err)
 		}

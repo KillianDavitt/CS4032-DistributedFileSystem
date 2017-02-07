@@ -21,5 +21,5 @@ func main() {
 	iris.Post("/read_file", readFile)
 	iris.Post("/receive_goss", receiveGoss)
 	iris.Post("/put_goss", putGoss)
-	iris.ListenTLS(":8082", "./fs.cert.pem", "./fs.key.pem")
+	iris.ListenTLS(":8080", "./fs.cert.pem", "./fs.key.pem")
 }

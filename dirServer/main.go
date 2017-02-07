@@ -25,5 +25,5 @@ func main() {
 	iris.Post("/list_files", listFiles)
 	iris.Post("/put_file", putFile)
 	iris.Post("/register_token", registerToken)
-	iris.ListenTLS(":8081", "dir.crt.pem", "dir.key.pem")
+	iris.ListenTLS(":8080", "dir.crt.pem", "dir.key.pem")
 }

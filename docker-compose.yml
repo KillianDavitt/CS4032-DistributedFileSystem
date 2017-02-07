@@ -1,7 +1,7 @@
 version: "2"
 services:
-  dir:
-    image: "davittk/lockserver"
+  trans:
+    image: "davittk/transactionserver"
     working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/" 
     volumes: 
         - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/
@@ -13,6 +13,26 @@ services:
 
   redis:
     image: redis:alpine
+
+  dir:
+    image: "davittk/dirserver"
+    links:
+        - redis
+  lock:
+    image: "davittk/lockserver"
+    links:
+        - redis
+
+    networks:
+      - authserver_main_net
+
+
+    networks:
+      - authserver_main_net
+
+  redis:
+    image: redis:alpine
+
 networks:
   authserver_main_net:
     external: true

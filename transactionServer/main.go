@@ -12,10 +12,9 @@ func main() {
 	authServ := auth.Init()
 	authServ.Register("transaction", pubKeyBytes)
 
-	iris.Post("/get", get)
 	iris.Post("/put", put)
 	
 	iris.Post("/end_transaction", endTransaction)
 	iris.Post("/begin_transaction", beginTransaction)
-	iris.ListenTLS(":8088", "./transaction.crt.pem", "./transaction.key.pem")
+	iris.ListenTLS(":8080", "./transaction.crt.pem", "./transaction.key.pem")
 }

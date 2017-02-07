@@ -2,12 +2,8 @@ package main
 
 import (
 	"github.com/kataras/iris"
-//	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/client"
+	"gopkg.in/redis.v5"
 )
-
-func get(ctx *iris.Context) {
-	ctx.HTML(iris.StatusOK, "Not yet implemented")
-}
 
 func put(ctx *iris.Context) {
 	// First we need to get the transaction id and make sure that we're in a transaction
@@ -16,10 +12,11 @@ func put(ctx *iris.Context) {
 
 	// Next tell the dirServer we want to put
 	//client.Put()
-
+	
 	// Next do a shadow put on the fileServer returned
 
 	// Then we are finished, nothing else happens until the client ends the transaction
+	ctx.HTML(iris.StatusOK, "Put")
 }
 
 func endTransaction(ctx *iris.Context) {
@@ -41,4 +38,39 @@ func beginTransaction(ctx *iris.Context) {
 
 	// Generate a transaction id
 	ctx.HTML(iris.StatusOK, "Okay")
+}
+
+func genTransactionId() string {
+	return "id"
+}
+
+func getCurrTIDRedis() string {
+	client := getTIDRedis()
+	tid, err := client.Get("tid").Result()
+	if err != nil {
+		return "fail"
+	}
+	return tid
+}
+
+func unlockFileRedis(filename string, holder string) bool {
+	client := getTIDRedis()
+	lock, err := client.Get(filename).Result()
+	if err != nil {
+		return false
+	}
+	if lock != holder {
+		return false
+	} else {
+		err = client.Set(filename, "0", 0).Err()
+		if err != nil {
+			return false
+		} else {
+			return true
+		}
+	}
+}
+
+func getTIDRedis() *redis.Client {
+	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 9})
 }

@@ -22,16 +22,13 @@ general protocol notes and thoughts can be found in [[file:notes/][notes/]]
 cd authServer
 docker-compose up
 
-cd dirServer
+# compose in the root of the project
+# This starts the lock server, directory server and transaction server
+cd ..
 docker-compose up
 
+# This starts 2 fileservers
 cd fileServer
-docker-compose up
-
-cd lockServer 
-docker-compose up
-
-cd transactionServer
 docker-compose up
 
 cd client
