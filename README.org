@@ -16,6 +16,9 @@ general protocol notes and thoughts can be found in [[file:notes/][notes/]]
 
 # Complete each action in a seperate terminal session
 
+# Execute this script to setup the SSL certificates
+./install.sh
+
 cd authServer
 docker-compose up
 
