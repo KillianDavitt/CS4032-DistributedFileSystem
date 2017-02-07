@@ -38,7 +38,7 @@ lockServer -> Client: file is unlocked
 [[file:lock.png]]
 
 #+BEGIN_SRC plantuml :file replication.png
-Client -> fileServer: put(file)
+Client -> fileServerA: put(file)
 fileServerA -> Client: OK
 fileServerA -> dirServer: get all fileServers with file
 dirServer -> fileServerA: [fileServers]
@@ -49,3 +49,19 @@ fileServerA -> fileServerB: fileA
 
 
 #+END_SRC
+
+#+RESULTS:
+[[file:replication.png]]
+
+
+#+BEGIN_SRC plantuml :file transactions.png
+Client -> TransactionServer: begin_transaction
+Client -> TransactionServer: put(file)
+TransactionServer -> fileServer: put_shadow(file)
+ 
+#+END_SRC
+
+#+RESULTS:
+[[file:transactions.png]]
+
+

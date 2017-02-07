@@ -69,3 +69,22 @@ user of such.
 [[file:lock.png]]
 
 * Transactions
+Transactions are implemented in a fashion very similar to what was
+described in the assignment specification.  A transaction server is
+hosted and any client looking to begin a transaction will ask the
+transaction server to begin a transaction.  If there is no ongoing
+transaction, the transaction server will issue a transaction id to the
+client and the client will present this id in all further
+communication with the transaction server.
+
+Any write operations that the client then wishes to make will be
+directed at the transaction server.  The transaction server will
+attempt to complete these operations with a given fileserver although
+the fileserver will make these alterations 'in shadow' i.e. the
+fileserver will make a note that it has been asked to make the change,
+but it will not commit the change to the physical filesystem.
+
+When a client has finished making operations, it will tell the
+transaction server to end the transaction. The transaction server will
+then ask all the involved fileservers to enter the 'Ready to Commit'
+state.
