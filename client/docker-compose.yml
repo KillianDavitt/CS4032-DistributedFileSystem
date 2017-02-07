@@ -1,7 +1,7 @@
 version: "2"
 services:
   client:
-    build: .
+    image: "davittk/client"
     working_dir: "/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/" 
     volumes: 
         - .:/home/killian/go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/
