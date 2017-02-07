@@ -11,6 +11,8 @@ The services are intended to be run with docker and docker-compose.
 If you would like to run the project, you can either install golang and all of the dependencies, or use a prepackaged image which I will provide. The images may
 be run using the docker-compose files in each service's directory.
 
+The vast majority of the features described below are fully implemented in my program. The code for transactions requires a bit more work.
+
 * Authentication & Security
 Security and authentication of the different services was mostly done
 using x509 certificates and RSA keypairs. This allowed for an
