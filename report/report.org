@@ -79,6 +79,8 @@ transaction, the transaction server will issue a transaction id to the
 client and the client will present this id in all further
 communication with the transaction server.
 
+[[file:transactions.png]]
+
 Any write operations that the client then wishes to make will be
 directed at the transaction server.  The transaction server will
 attempt to complete these operations with a given fileserver although

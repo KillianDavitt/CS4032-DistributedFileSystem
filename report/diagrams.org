@@ -57,7 +57,14 @@ fileServerA -> fileServerB: fileA
 #+BEGIN_SRC plantuml :file transactions.png
 Client -> TransactionServer: begin_transaction
 Client -> TransactionServer: put(file)
-TransactionServer -> fileServer: put_shadow(file)
+TransactionServer -> fileServerA: put_shadow(file)
+Client -> TransactionServer: put(file2)
+TransactionServer -> fileServerB: put_shadow(file2)
+Client -> TransactionServer: end_transaction
+TransactionServer -> fileServerA: enter_ready_to_commit
+TransationServer -> fileServerB: enter_ready_to_commit
+TransactionServer -> fileServerA: commit
+TransactionServer -> fileServerB: commit
  
 #+END_SRC
 
