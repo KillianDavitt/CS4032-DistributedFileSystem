@@ -44,6 +44,11 @@ implemented using the robust libraries of golang/tls, golang/x509,
 openssl, etc. This ensures an incredibly high level of reliability
 compared with building our own crypto from the ground up.
 
+** Adding a user
+running the register.go file in the root directory of the project will
+add a user to the database. Passwords are salted and hashed using the
+state of the art bcrypt algorithm to ensure safety of password storage.
+
 * Replication
 A Gossip like system was implemented. Upon a fileserver receiving a file. It asks the directory server for the list of fileserver ip addresses. Then file server then
 sends a request to send gossip to 3 of the file servers. If the target server responds postively, then the fileserver sends on the latest version of the file. A simple
