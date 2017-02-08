@@ -92,7 +92,36 @@ then ask all the involved fileservers to enter the 'Ready to Commit'
 state.
 
 * Client Proxy
-The client proxy, or client library is contained in the directory utils/client. It implements get, put, list, lock and unlock methods.
+The client proxy, or client library is contained in the directory
+utils/client. It implements get, put, list, lock and unlock methods.
+The get, put and list methods contact the directory server directly, a
+response is returned from the directory server. In the case of get and
+put, the response from the directory server contains the ip of a file
+server where the client is to complete its task.
+
+** Put file
+After contacting the directory server to put the file, either the file
+already exists or it does not. If the file already exists, the the ip
+of the fileserver which already contains the file. Otherwise the
+directory server will assign a random fileserver from it's list of
+fileservers from which to give the client. 
+
+After the client has the ip of the fileserver it needs to contact, it
+simply calls the put_file endpoint on the fileserver and the
+fileserver saves the provided file to disk.
+
+** Get file
+Get file is similar to put file, however if the directory server does
+not have a record of the file it will return error to the client. If
+the directory server does return the ip of a fileserver the client
+contacts that fileserver with the get_file endpoint and the fileserver
+returns the file to the client
+
+** List files
+To list files the client contacts the directory server and asks for a
+list of files. The directory server returns the list and the client
+displays it.
+
 
 * Client example
 The client example is a simple implementation of the above client proxy. It implements an 'sftp' style command line interface and provides all of the methods of the client
