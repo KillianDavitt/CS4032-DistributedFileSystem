@@ -12,6 +12,10 @@ general protocol notes and thoughts can be found in [[file:notes/][notes/]]
 
 * Running the services
 
+The location of my publically hosted docker images are contained in
+each of the docker compose files. It should automatically download and
+run. This saves you from installing go and all the dependancies that i've used.
+
 #+BEGIN_SRC bash
 
 # Complete each action in a seperate terminal session
