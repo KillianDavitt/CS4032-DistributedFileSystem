@@ -65,6 +65,7 @@ TransactionServer -> fileServerA: enter_ready_to_commit
 TransactionServer -> fileServerB: enter_ready_to_commit
 TransactionServer -> fileServerA: commit
 TransactionServer -> fileServerB: commit
+TransactionServer -> Client: Success
  
 #+END_SRC
 
