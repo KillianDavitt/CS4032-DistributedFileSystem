@@ -90,3 +90,10 @@ When a client has finished making operations, it will tell the
 transaction server to end the transaction. The transaction server will
 then ask all the involved fileservers to enter the 'Ready to Commit'
 state.
+
+* Client Proxy
+The client proxy, or client library is contained in the directory utils/client. It implements get, put, list, lock and unlock methods.
+
+* Client example
+The client example is a simple implementation of the above client proxy. It implements an 'sftp' style command line interface and provides all of the methods of the client
+proxy directly to the user.
