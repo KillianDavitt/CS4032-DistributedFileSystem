@@ -2,37 +2,37 @@ package main
 
 import (
 	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"gopkg.in/redis.v5"
 )
 
-func lockFile(ctx *iris.Context) {
+func lockFile(ctx iris.Context) {
 	if !auth.IsAllowed(ctx) {
-		ctx.HTML(iris.StatusOK, "UNAUTHORISED")
+		ctx.HTML("UNAUTHORISED")
 		return
 	}
 	filename := ctx.FormValue("filename")
 	requester := ctx.FormValue("requester")
 	succ := lockFileRedis(filename, requester)
 	if succ {
-		ctx.HTML(iris.StatusOK, "Lock granted")
+		ctx.HTML("Lock granted")
 	} else {
-		ctx.HTML(iris.StatusOK, "Lock is already taken")
+		ctx.HTML("Lock is already taken")
 	}
 }
 
-func unlockFile(ctx *iris.Context) {
+func unlockFile(ctx iris.Context) {
 	if !auth.IsAllowed(ctx) {
-		ctx.HTML(iris.StatusOK, "UNAUTHORISED")
+		ctx.HTML("UNAUTHORISED")
 		return
 	}
 	filename := ctx.FormValue("filename")
 	requester := ctx.FormValue("requester")
 	succ := unlockFileRedis(filename, requester)
 	if succ {
-		ctx.HTML(iris.StatusOK, "Lock removed")
+		ctx.HTML("Lock removed")
 	} else {
-		ctx.HTML(iris.StatusOK, "You are not authorised to remove this lock")
+		ctx.HTML("You are not authorised to remove this lock")
 	}
 }
 

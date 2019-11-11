@@ -1,25 +1,24 @@
 package main
 
 import (
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
 	"gopkg.in/redis.v5"
 )
 
-func put(ctx *iris.Context) {
+func put(ctx iris.Context) {
 	// First we need to get the transaction id and make sure that we're in a transaction
 	// Otherwise return error
 
-
 	// Next tell the dirServer we want to put
 	//client.Put()
-	
+
 	// Next do a shadow put on the fileServer returned
 
 	// Then we are finished, nothing else happens until the client ends the transaction
-	ctx.HTML(iris.StatusOK, "Put")
+	ctx.HTML("Put")
 }
 
-func endTransaction(ctx *iris.Context) {
+func endTransaction(ctx iris.Context) {
 	// Get the list of all participating file servers
 
 	// For each, tell them to enter ready to commit
@@ -29,15 +28,15 @@ func endTransaction(ctx *iris.Context) {
 	// Wait for confirmation
 
 	// Return success to client
-	
-	ctx.HTML(iris.StatusOK, "Not yet implemented")
+
+	ctx.HTML("Not yet implemented")
 }
 
-func beginTransaction(ctx *iris.Context) {
+func beginTransaction(ctx iris.Context) {
 	// Ensure no other transaction running
 
 	// Generate a transaction id
-	ctx.HTML(iris.StatusOK, "Okay")
+	ctx.HTML("Okay")
 }
 
 func genTransactionId() string {

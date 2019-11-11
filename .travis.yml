@@ -1,13 +1,13 @@
 language: go
 
 go:
-  - tip
+  - 1.13.x
 
 install:
   # Add Godeps dependencies to GOPATH and PATH
   - export GOPATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace:$GOPATH"
   - export PATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace/bin:$PATH"
-  - go get github.com/kataras/iris
+  - go get github.com/kataras/iris/v12@latest
   - go get gopkg.in/redis.v5
   - go get gopkg.in/mgo.v2/bson
 

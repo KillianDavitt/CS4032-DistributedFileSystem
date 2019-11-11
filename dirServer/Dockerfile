@@ -1,4 +1,4 @@
-FROM golang
+FROM golang:latest
 
 
 ADD . /go/src/github.com/KillianDavitt/CS4032-DistributedFileSystem/dirServer

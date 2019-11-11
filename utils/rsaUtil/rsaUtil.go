@@ -39,7 +39,7 @@ func GetPrivKey() *rsa.PrivateKey {
 	}
 	var privKey *rsa.PrivateKey
 	privKey = &*privKeyInterface.(*rsa.PrivateKey)
-	
+
 	return privKey
 
 }
