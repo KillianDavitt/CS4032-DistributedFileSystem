@@ -6,30 +6,31 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsaUtil"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
-	"github.com/kataras/iris"
-	"golang.org/x/crypto/bcrypt"
-	"gopkg.in/redis.v5"
 	"log"
 	"net"
 	"net/http"
 	"net/url"
+
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/rsaUtil"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
+	"github.com/kataras/iris/v12"
+	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/redis.v5"
 )
 
-func getDirIp(ctx *iris.Context) {
+func getDirIp(ctx iris.Context) {
 	dirServerIps := getDirIps()
 	dirServerIp := dirServerIps[0]
 	fmt.Println(dirServerIp.String())
-	ctx.HTML(iris.StatusOK, dirServerIp.String())
+	ctx.HTML(dirServerIp.String())
 }
 
 func getLoginRedis() *redis.Client {
 	return redis.NewClient(&redis.Options{Addr: "localhost:6379", Password: "", DB: 0})
 }
 
-func login(c *iris.Context) {
+func login(c iris.Context) {
 	// Connect to redis
 	client := getLoginRedis()
 
@@ -40,7 +41,8 @@ func login(c *iris.Context) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	if err != nil {
-		c.HTML(iris.StatusForbidden, "Incorrect username or password")
+		c.StatusCode(iris.StatusForbidden)
+		c.HTML("Incorrect username or password")
 	}
 
 	// Gen token, give back to user, then give to all servers
@@ -49,7 +51,7 @@ func login(c *iris.Context) {
 	ticketMapString := new_ticket.CreateTicketMap(privKey)
 
 	distributeTickets(ticketMapString)
-	c.HTML(iris.StatusOK, ticketMapString)
+	c.HTML(ticketMapString)
 }
 
 func distributeTickets(ticketMapString string) {
@@ -66,7 +68,7 @@ func distributeTickets(ticketMapString string) {
 	}
 }
 
-func registerServer(ctx *iris.Context) {
+func registerServer(ctx iris.Context) {
 	serverTypeString := ctx.FormValue("server_type")
 	serverType := FILE
 	if serverTypeString == "fileserver" {
@@ -89,7 +91,7 @@ func registerServer(ctx *iris.Context) {
 
 	pubKey := pubKeyInter.(*rsa.PublicKey)
 
-	serverIP := net.ParseIP(ctx.Request.RemoteAddr)
+	serverIP := net.ParseIP(ctx.Request().RemoteAddr)
 	serverIP = net.ParseIP("127.0.0.1")
 	fmt.Println("A server wants to register itself with the following public key")
 	fingerprint := auth.GetRSAFingerprint(pubKey)
@@ -102,5 +104,5 @@ func registerServer(ctx *iris.Context) {
 		serv := NewServer(serverIP, serverType, pubKey)
 		serv.writeServerRedis()
 	}
-	ctx.HTML(iris.StatusOK, "Not registered")
+	ctx.HTML("Not registered")
 }

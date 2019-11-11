@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/kataras/iris"
 	"io/ioutil"
 	"log"
+
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris/v12"
 )
 
 func main() {
@@ -16,10 +17,13 @@ func main() {
 	authServ := auth.Init()
 	authServ.Register("file", pubKeyBytes)
 
-	iris.Post("/get_file_hash", getFileHash)
-	iris.Post("/write_file", writeFile)
-	iris.Post("/read_file", readFile)
-	iris.Post("/receive_goss", receiveGoss)
-	iris.Post("/put_goss", putGoss)
-	iris.ListenTLS(":8080", "./fs.cert.pem", "./fs.key.pem")
+	app := iris.New()
+
+	app.Post("/get_file_hash", getFileHash)
+	app.Post("/write_file", writeFile)
+	app.Post("/read_file", readFile)
+	app.Post("/receive_goss", receiveGoss)
+	app.Post("/put_goss", putGoss)
+
+	app.Run(iris.TLS(":8080", "./fs.cert.pem", "./fs.key.pem"), iris.WithoutServerError(iris.ErrServerClosed))
 }

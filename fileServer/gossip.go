@@ -2,18 +2,19 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/kataras/iris"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net"
 	"net/url"
 	"strconv"
-	"fmt"
+
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris/v12"
 )
 
 // Receive a question asking if we need the goss
-func receiveGoss(ctx *iris.Context) {
+func receiveGoss(ctx iris.Context) {
 	filename := ctx.FormValue("filename")
 	historyNumber := ctx.FormValue("history_number")
 	historyInt, err := strconv.Atoi(historyNumber)
@@ -22,28 +23,28 @@ func receiveGoss(ctx *iris.Context) {
 	}
 	if isFileOutdated(filename, historyInt) {
 		go findGossRecipients(filename)
-		ctx.HTML(iris.StatusOK, "yes")
+		ctx.HTML("yes")
 	} else {
-		ctx.HTML(iris.StatusOK, "no")
+		ctx.HTML("no")
 	}
 }
 
 // Accept the latest goss
-func putGoss(ctx *iris.Context) {
+func putGoss(ctx iris.Context) {
 	filename := ctx.FormValue("filename")
 	fileBytes := []byte(ctx.FormValue("file"))
 	err := ioutil.WriteFile(filename, fileBytes, 0777)
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx.HTML(iris.StatusOK, "Goss recv")
+	ctx.HTML("Goss recv")
 }
 
 func getDirIp() net.IP {
 
 	authServ := auth.Init()
 	client := authServ.Client
-	resp, err := client.Get("https://"+authServ.Ip.String()+":8080/get_dir_ip")
+	resp, err := client.Get("https://" + authServ.Ip.String() + ":8080/get_dir_ip")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -89,11 +90,10 @@ func sendGoss(fileServerIp net.IP, filename string) {
 	if respString != "yes" {
 		// fileServer does not want the latest goss
 		return
-	} else {
-		// Send the latest goss
-		_, err := client.PostForm("https://"+fileServerIp.String()+":8080/put_goss", url.Values{"filename": {filename}})
-		if err != nil {
-			log.Fatal(err)
-		}
+	}
+	// Send the latest goss
+	_, err = client.PostForm("https://"+fileServerIp.String()+":8080/put_goss", url.Values{"filename": {filename}})
+	if err != nil {
+		log.Fatal(err)
 	}
 }

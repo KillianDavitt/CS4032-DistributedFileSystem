@@ -55,7 +55,7 @@ func getConfig() *AuthServer {
 				log.Fatal(err)
 			}
 			newServ.Ip = ip[0]
-				
+
 		}
 		authServBytes, err := json.Marshal(newServ)
 		if err != nil {
@@ -87,7 +87,7 @@ func Init() *AuthServer {
 	authServ := getConfig()
 	fmt.Println("UPDATED!!!!!")
 	// InsecureSkipVerify must be set since we need to contact the auth server once to find it's fingerprint
-	conn, err := tls.Dial("tcp", authServ.Ip.String() + ":8080", &tls.Config{InsecureSkipVerify: true})
+	conn, err := tls.Dial("tcp", authServ.Ip.String()+":8080", &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
 		log.Fatal(err)
 	}

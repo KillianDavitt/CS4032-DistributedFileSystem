@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/kataras/iris"
 	"io/ioutil"
 	"log"
+
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/kataras/iris/v12"
 )
 
 func main() {
@@ -13,7 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	// Init contacts the auth server and organises OUR trust of it
 	authServer := auth.Init()
 	// Register contacts the auth server and organises THEIR trust of us
@@ -21,9 +22,12 @@ func main() {
 	authServer.Register("dirServer", pubKeyBytes)
 
 	// Our own routes
-	iris.Post("/get_file", getFile)
-	iris.Post("/list_files", listFiles)
-	iris.Post("/put_file", putFile)
-	iris.Post("/register_token", registerToken)
-	iris.ListenTLS(":8080", "dir.crt.pem", "dir.key.pem")
+	app := iris.New()
+
+	app.Post("/get_file", getFile)
+	app.Post("/list_files", listFiles)
+	app.Post("/put_file", putFile)
+	app.Post("/register_token", registerToken)
+
+	app.Run(iris.TLS(":8080", "dir.crt.pem", "dir.key.pem"), iris.WithoutServerError(iris.ErrServerClosed))
 }

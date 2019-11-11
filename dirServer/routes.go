@@ -3,41 +3,47 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
-	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
-	"github.com/kataras/iris"
-	"gopkg.in/redis.v5"
 	"log"
 	"net"
+
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/auth"
+	"github.com/KillianDavitt/CS4032-DistributedFileSystem/utils/ticket"
+	"github.com/kataras/iris/v12"
+	"gopkg.in/redis.v5"
 )
 
-func registerFileHolder(ctx *iris.Context) {
+func registerFileHolder(ctx iris.Context) {
 	// TODO
 	if false {
-		ctx.HTML(iris.StatusOK, "Forbidden")
+		ctx.HTML("Forbidden")
 		return
 	}
 	filename := ctx.FormValue("filename")
 	fileHash := ctx.FormValue("file_hash")
 	newFileServerIP := "0.0.0.0"
 	NewRedisFile(filename, net.ParseIP(newFileServerIP), []byte(fileHash))
-	ctx.HTML(iris.StatusOK, "Registered the file server as holding this file")
+	ctx.HTML("Registered the file server as holding this file")
 }
 
-func getFile(ctx *iris.Context) {
+func getFile(ctx iris.Context) {
 	if !isAllowed(ctx) {
-		ctx.HTML(iris.StatusForbidden, "Invalid Token")
+		ctx.StatusCode(iris.StatusForbidden)
+		ctx.HTML("Invalid Token")
+		return
 	}
+
 	filename := ctx.FormValue("filename")
 	fileString := lookupFileName(filename)
 	fileObj := UnmarshalFile([]byte(fileString))
 	fmt.Println(fileObj.Ip.String())
-	ctx.HTML(iris.StatusOK, fileObj.Ip.String())
+	ctx.HTML(fileObj.Ip.String())
 }
 
-func putFile(ctx *iris.Context) {
+func putFile(ctx iris.Context) {
 	if !isAllowed(ctx) {
-		ctx.HTML(iris.StatusForbidden, "Invalid Token")
+		ctx.StatusCode(iris.StatusForbidden)
+		ctx.HTML("Invalid Token")
+		return
 	}
 	fileName := ctx.FormValue("filename")
 	fileHash := []byte(ctx.FormValue("hash"))
@@ -53,13 +59,13 @@ func putFile(ctx *iris.Context) {
 		fileObj.Hash = fileHash
 		fileObj.UpdateRedisFile()
 
-		ctx.HTML(iris.StatusOK, fileObj.Ip.String())
+		ctx.HTML(fileObj.Ip.String())
 	} else {
 		// TODO: Fix this
 		fmt.Println("Put: File did not exist")
 		newFileServerIP := "0.0.0.0"
 		NewRedisFile(fileName, net.ParseIP(newFileServerIP), fileHash)
-		ctx.HTML(iris.StatusOK, newFileServerIP)
+		ctx.HTML(newFileServerIP)
 	}
 }
 
@@ -73,9 +79,11 @@ func lookupFileName(filename string) string {
 	return res
 }
 
-func listFiles(ctx *iris.Context) {
+func listFiles(ctx iris.Context) {
 	if !isAllowed(ctx) {
-		ctx.HTML(iris.StatusForbidden, "Invalid token")
+		ctx.StatusCode(iris.StatusForbidden)
+		ctx.HTML("Invalid token")
+		return
 	}
 	fileClient := getFileRedis()
 	keys, err := fileClient.Keys("*").Result()
@@ -88,10 +96,10 @@ func listFiles(ctx *iris.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx.HTML(iris.StatusOK, string(jsonFiles))
+	ctx.HTML(string(jsonFiles))
 }
 
-func registerToken(ctx *iris.Context) {
+func registerToken(ctx iris.Context) {
 	pubKey := auth.RetrieveKey("authserver")
 	token := ctx.FormValue("token")
 	ticket := ticket.GetTicketMap(token, pubKey)
@@ -104,10 +112,10 @@ func registerToken(ctx *iris.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx.HTML(iris.StatusOK, "Register token succ")
+	ctx.HTML("Register token succ")
 }
 
-func isAllowed(ctx *iris.Context) bool {
+func isAllowed(ctx iris.Context) bool {
 	token := ctx.FormValue("token")
 	pubKey := auth.RetrieveKey("authserver")
 	ticket := ticket.GetTicketMap(token, pubKey)
